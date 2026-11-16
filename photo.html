@@ -1,0 +1,545 @@
+<title>Frosty's List</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one brass-framed tray on a shagreen tabletop; the office scene (Frosty on the couch) on the left, the list on the right. Stacks on phones. */
+:root {
+  --table: #E6E1D6; --dot: #D3CBBB; --brass: #B08D3E; --brass-soft: #D9C38E;
+  --panel: #FBFAF6; --panel-2: #F2EFE7; --ink: #1F2B27; --muted: #69736E; --line: #E2DDD2;
+  --teal: #2E6F62; --teal-ink: #FFFFFF; --teal-soft: #DDEBE6; --cognac: #A55B2C; --amber: #A86A12; --amber-soft: #F6E8CF; --danger: #A63D2F;
+  --shadow: rgba(48, 38, 22, .28);
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Instrument Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --table: #1D2220; --dot: #2B322E; --brass: #C7A256; --brass-soft: #6E5A2E;
+  --panel: #171C1A; --panel-2: #202624; --ink: #EDE8DD; --muted: #9CA59F; --line: #2D3431;
+  --teal: #74C2B1; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
+  --shadow: rgba(0, 0, 0, .55);
+  color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --table: #1D2220; --dot: #2B322E; --brass: #C7A256; --brass-soft: #6E5A2E;
+  --panel: #171C1A; --panel-2: #202624; --ink: #EDE8DD; --muted: #9CA59F; --line: #2D3431;
+  --teal: #74C2B1; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
+  --shadow: rgba(0, 0, 0, .55);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background-color: var(--table);
+  background-image: radial-gradient(circle, var(--dot) 0 1.3px, transparent 1.8px), radial-gradient(circle, var(--dot) 0 1.1px, transparent 1.6px);
+  background-size: 8px 8px, 8px 8px; background-position: 0 0, 4px 4px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 36px 48px; min-height: 100vh;
+}
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.tray {
+  max-width: 1180px; margin: 0 auto; background: var(--panel); border-radius: 26px; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  height: clamp(620px, calc(100vh - 84px), 780px);
+  box-shadow: 0 0 0 1.5px var(--brass), 0 0 0 7px var(--panel-2), 0 0 0 8.5px var(--brass), 0 40px 70px -30px var(--shadow);
+  margin-block: 9px;
+}
+
+/* ---------- scene: the real office photo with Frosty cut out and set on the couch ---------- */
+.scene { position: relative; min-width: 0; overflow: hidden; background: #2E2620; border-right: 1px solid var(--line); }
+.stage { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 1206 / 892; }
+.stage .office { position: absolute; inset: 0; width: 100%; height: 100%; display: block; max-width: none; }
+.shade-l { position: absolute; border-radius: 50%; pointer-events: none; }
+.contact { left: 48.2%; top: 56.6%; width: 10.6%; height: 2.6%; background: rgba(34, 14, 4, .62); filter: blur(4px); }
+.cast { left: 51%; top: 45.6%; width: 9.8%; height: 11.8%; background: rgba(34, 14, 4, .2); filter: blur(9px); }
+.frosty { position: absolute; left: 47.68%; top: 40.58%; width: 11.28%; height: auto; max-width: none; transform-origin: 50% 100%; filter: drop-shadow(0 1px 1px rgba(40, 20, 8, .25)); }
+.frosty.cheer { animation: hop .9s cubic-bezier(.3,.7,.4,1); }
+@keyframes hop { 0% { transform: translateY(0); } 30% { transform: translateY(-9%) rotate(-3deg); } 55% { transform: translateY(0) rotate(2deg); } 72% { transform: translateY(-3%); } 100% { transform: translateY(0); } }
+.vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(20, 14, 10, .35), transparent 22%), radial-gradient(120% 90% at 50% 45%, transparent 60%, rgba(20, 14, 10, .25)); }
+.caption {
+  position: absolute; left: 16px; bottom: 14px; display: flex; gap: 8px; align-items: center;
+  background: rgba(251, 250, 246, .88); backdrop-filter: blur(6px); color: #5D6762;
+  border-radius: 999px; padding: 5px 12px 5px 10px; font-size: 12.5px; font-variant-numeric: tabular-nums;
+}
+.caption b { color: #1F2B27; font-weight: 600; }
+.caption .dot { width: 7px; height: 7px; border-radius: 50%; background: #FFC867; box-shadow: 0 0 8px #FFC867; }
+.bubble-anchor { position: absolute; left: 53.3%; bottom: 60.5%; transform: translateX(-50%); width: max-content; max-width: 230px; }
+.bubble {
+  font-family: var(--f-body); font-size: 15px; line-height: 1.3; color: #22302B; background: #FFFDF8; position: relative;
+  border: 1.5px solid #2E6F62; border-radius: 16px; padding: 8px 12px;
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,.45); opacity: 0; transform: translateY(6px) scale(.96); transform-origin: 50% 100%;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.bubble::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; background: #FFFDF8; border-right: 1.5px solid #2E6F62; border-bottom: 1.5px solid #2E6F62; transform: translateX(-50%) rotate(45deg); }
+.bubble.show { opacity: 1; transform: none; }
+.bubble b { font-weight: 600; }
+
+/* ---------- list panel ---------- */
+.panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.head { padding: 28px 30px 0; display: grid; gap: 4px; }
+.eyebrow { font-size: 12px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: 38px; line-height: 1.05; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--teal); }
+.summary { color: var(--muted); font-size: 14px; margin: 2px 0 0; min-height: 21px; }
+.summary b { color: var(--ink); font-weight: 600; }
+
+.add { margin: 18px 30px 0; padding: 14px; border-radius: 16px; background: var(--panel-2); border: 1px solid var(--line); display: grid; gap: 12px; }
+.add-row { display: flex; gap: 8px; }
+.text-in {
+  flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--panel); border-radius: 11px; padding: 10px 12px; font-size: 15px;
+}
+.text-in::placeholder { color: var(--muted); }
+.btn {
+  border: 0; border-radius: 11px; padding: 10px 16px; font-weight: 600; cursor: pointer; background: var(--teal); color: var(--teal-ink); white-space: nowrap;
+  transition: transform .1s ease, filter .15s ease;
+}
+.btn:hover { filter: brightness(1.06); } .btn:active { transform: translateY(1px); }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn.danger { background: transparent; color: var(--danger); border: 1px solid var(--line); }
+.btn.small { padding: 6px 11px; font-size: 13px; border-radius: 9px; }
+
+.remind { display: grid; gap: 10px; }
+.seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 2px; flex-wrap: wrap; width: fit-content; max-width: 100%; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { padding: 6px 12px; border-radius: 8px; font-size: 13.5px; cursor: pointer; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.seg label svg { width: 14px; height: 14px; }
+.seg input:checked + label { background: var(--teal-soft); color: var(--ink); font-weight: 600; }
+.seg input:focus-visible + label { outline: 2px solid var(--teal); outline-offset: 1px; }
+.when { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.when input { border: 1px solid var(--line); background: var(--panel); border-radius: 9px; padding: 6px 9px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.err { color: var(--danger); font-size: 13px; }
+
+.alerts { margin: 10px 30px 0; font-size: 12.5px; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.link { background: none; border: 0; padding: 0; color: var(--teal); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-size: inherit; }
+
+.lists { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 30px 26px; margin-top: 8px; scrollbar-width: thin; }
+.group-h { display: flex; justify-content: space-between; align-items: baseline; margin: 10px 0 4px; }
+.group-h h2 { font-family: var(--f-display); font-weight: 500; font-size: 15px; margin: 0; letter-spacing: .01em; }
+.group-h .count { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+ul.tasks { list-style: none; margin: 0; padding: 0; }
+.task { border-bottom: 1px solid var(--line); }
+.task-main { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; }
+.check {
+  width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; border: 1.8px solid var(--teal); background: transparent; cursor: pointer; padding: 0;
+  display: grid; place-items: center; transition: background .15s ease;
+}
+.check svg { width: 13px; height: 13px; opacity: 0; transition: opacity .15s; }
+.check:hover svg { opacity: .35; }
+.task.done .check { background: var(--teal); }
+.task.done .check svg { opacity: 1; color: var(--teal-ink); }
+.t-text { overflow-wrap: anywhere; font-size: 15px; }
+.task.done .t-text { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--muted) 60%, transparent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; padding: 2px 9px 2px 7px; border-radius: 999px; background: var(--teal-soft); color: var(--ink); font-variant-numeric: tabular-nums; }
+.chip svg { width: 12px; height: 12px; color: var(--teal); }
+.chip.quiet { background: transparent; color: var(--muted); padding-left: 0; }
+.chip.quiet svg { color: var(--muted); }
+.chip.snooze { background: var(--amber-soft); } .chip.snooze svg { color: var(--amber); }
+.icon-btn { border: 0; background: transparent; color: var(--muted); width: 30px; height: 30px; border-radius: 8px; cursor: pointer; display: grid; place-items: center; }
+.icon-btn:hover { background: var(--panel-2); color: var(--ink); }
+.icon-btn svg { width: 16px; height: 16px; }
+.editor { padding: 2px 0 14px 36px; display: grid; gap: 10px; }
+.editor-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.editor-actions .spacer { flex: 1; }
+
+.empty { display: grid; gap: 4px; padding: 26px 0 10px; color: var(--muted); }
+.empty strong { font-family: var(--f-display); font-weight: 500; color: var(--ink); font-size: 17px; }
+.store-note { font-size: 12px; color: var(--muted); padding-top: 16px; }
+
+/* ---------- reminder toasts ---------- */
+.toasts {
+  position: fixed; right: max(16px, calc(env(safe-area-inset-right, 0px) + 16px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  display: grid; gap: 10px; z-index: 20; width: min(360px, calc(100vw - 32px));
+}
+.toast {
+  background: var(--panel); border: 1.5px solid var(--brass); border-radius: 16px; padding: 14px; display: grid; grid-template-columns: 44px minmax(0,1fr); gap: 12px;
+  box-shadow: 0 20px 40px -18px var(--shadow); animation: rise .35s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.toast img { width: 44px; height: auto; display: block; }
+.toast .who { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.toast .what { font-weight: 600; overflow-wrap: anywhere; margin: 2px 0 10px; }
+.toast .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+
+@media (max-width: 860px) {
+  body { padding-block: 20px 32px; }
+  .tray { grid-template-columns: 1fr; height: auto; }
+  .scene { height: clamp(290px, 72vw, 430px); border-right: 0; border-bottom: 1px solid var(--line); }
+  .lists { overflow: visible; }
+  .head { padding: 22px 18px 0; } .add { margin: 16px 18px 0; } .alerts { margin: 10px 18px 0; } .lists { padding: 10px 18px 22px; }
+  h1 { font-size: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .frosty.cheer, .toast { animation: none !important; }
+  .bubble { transition: none; }
+}
+</style>
+
+<main class="tray">
+  <section class="scene" id="scene" aria-label="Frosty sitting on the cognac leather couch in the office">
+    <div class="stage" id="stage">
+      <img class="office" src="assets/office.jpg" alt="The office: a cognac leather couch under the window, a cream swivel chair, stacked ceramic lamp, moon plates and a patterned rug">
+      <span class="shade-l cast" aria-hidden="true"></span>
+      <span class="shade-l contact" aria-hidden="true"></span>
+      <img class="frosty" id="frosty" src="assets/frosty.webp" alt="Frosty the plush snowman, in his green hat and scarf, sitting on the couch">
+      <div class="bubble-anchor"><div class="bubble" id="bubble" role="status" aria-live="polite"></div></div>
+    </div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="caption"><span class="dot" aria-hidden="true"></span><span><b>Frosty</b>, on the couch</span><span aria-hidden="true">·</span><span id="clock"></span></div>
+  </section>
+
+  <section class="panel" aria-labelledby="title">
+    <header class="head">
+      <div class="eyebrow" id="today"></div>
+      <h1 id="title">Frosty's <em>List</em></h1>
+      <p class="summary" id="summary"></p>
+    </header>
+
+    <form class="add" id="addForm" autocomplete="off">
+      <div class="add-row">
+        <label for="newText" class="sr" hidden>New to-do</label>
+        <input class="text-in" id="newText" maxlength="240" placeholder="What needs doing?" aria-label="New to-do">
+        <button class="btn" type="submit">Add</button>
+      </div>
+      <div id="newRemind"></div>
+      <div class="err" id="addErr" hidden></div>
+    </form>
+    <div class="alerts" id="alerts"></div>
+
+    <div class="lists" id="lists"></div>
+  </section>
+</main>
+<div class="toasts" id="toasts" aria-live="assertive"></div>
+
+<script>
+(() => {
+  const $ = (s, el = document) => el.querySelector(s);
+    const ICON = {
+    bell: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V7a4 4 0 0 1 8 0v4l1.2 1.4H2.8L4 11Z"/><path d="M6.6 14a1.5 1.5 0 0 0 2.8 0"/></svg>',
+    repeat: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5V6a2.5 2.5 0 0 1 2.5-2.5h7.5"/><path d="m10.5 1.5 2 2-2 2"/><path d="M13.5 8.5V10a2.5 2.5 0 0 1-2.5 2.5H3.5"/><path d="m5.5 14.5-2-2 2-2"/></svg>',
+    none: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="5.5"/><path d="M4.2 11.8 11.8 4.2"/></svg>',
+    check: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8.5 3.2 3L13 4.5"/></svg>',
+    edit: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.8 2.7a1.6 1.6 0 0 1 2.3 2.3L5.5 12.6 2.5 13.5l.9-3 7.4-7.8Z"/></svg>',
+    snooze: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8.5" r="5.5"/><path d="M8 5.8v2.9l1.8 1.2"/></svg>',
+  };
+
+  /* ---------- scene layout: cover the panel with the photo, keeping Frosty in view ---------- */
+  const scene = $("#scene"), stage = $("#stage"), RATIO = 1206 / 892;
+  function layout() {
+    const cw = scene.clientWidth, ch = scene.clientHeight; if (!cw || !ch) return;
+    const zoom = cw < 600 ? 1.85 : 1.12;
+    const W = Math.max(cw, ch * RATIO) * zoom, H = W / RATIO;
+    const L = Math.min(0, Math.max(cw - W, cw / 2 - .535 * W)), T = Math.min(0, Math.max(ch - H, ch * .56 - .5 * H));
+    Object.assign(stage.style, { width: W + "px", height: H + "px", left: L + "px", top: T + "px" });
+  }
+  layout();
+  try { new ResizeObserver(layout).observe(scene); } catch { addEventListener("resize", layout); }
+
+  /* ---------- time helpers ---------- */
+  const fmtTime = ms => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  function dayDiff(ms) { const a = new Date(); a.setHours(0,0,0,0); const b = new Date(ms); b.setHours(0,0,0,0); return Math.round((b - a) / 864e5); }
+  function fmtWhen(ms) {
+    const d = dayDiff(ms);
+    if (d === 0) return "Today " + fmtTime(ms);
+    if (d === 1) return "Tomorrow " + fmtTime(ms);
+    if (d === -1) return "Yesterday " + fmtTime(ms);
+    return new Date(ms).toLocaleDateString([], { month: "short", day: "numeric" }) + ", " + fmtTime(ms);
+  }
+  function fmtHHMM(hhmm) { const [h, m] = hhmm.split(":").map(Number); const d = new Date(); d.setHours(h, m, 0, 0); return fmtTime(d); }
+  function nextDaily(hhmm, after = Date.now()) { const [h, m] = hhmm.split(":").map(Number); const d = new Date(after); d.setHours(h, m, 0, 0); if (d.getTime() <= after) d.setDate(d.getDate() + 1); return d.getTime(); }
+  const pad = n => String(n).padStart(2, "0");
+  const toDateInput = ms => { const d = new Date(ms); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+  const toTimeInput = ms => { const d = new Date(ms); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+  function nextHour() { const d = new Date(); d.setMinutes(0, 0, 0); d.setHours(d.getHours() + 1); return d.getTime(); }
+
+  /* ---------- state + storage ---------- */
+  const LS = "frosty-list-v1";
+  let tasks = {};
+  let col = null, cloud = false, readOnly = false;
+  try { tasks = JSON.parse(localStorage.getItem(LS) || "{}") || {}; } catch { tasks = {}; }
+  const saveLocal = () => { try { localStorage.setItem(LS, JSON.stringify(tasks)); } catch {} };
+  const newId = () => "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const writeChain = {};
+  function persist(t) {
+    tasks[t.id] = t; saveLocal();
+    if (col && !readOnly) {
+      const body = JSON.parse(JSON.stringify(t));
+      writeChain[t.id] = (writeChain[t.id] || Promise.resolve()).then(() => col.doc(t.id).set(body)).catch(e => { if (e && e.code === "invalid_argument") { readOnly = true; render(); } });
+    }
+  }
+  function remove(id) {
+    delete tasks[id]; saveLocal();
+    if (col && !readOnly) writeChain[id] = (writeChain[id] || Promise.resolve()).then(() => col.doc(id).delete()).catch(() => {});
+  }
+
+  async function connect() {
+    try {
+      if (!window.claude || !claude.use) return;
+      const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+      if (!db || !user) return;
+      const uid = await user.id(); if (!uid) return;
+      col = db.collection("data/users/" + uid);
+      let first = true;
+      col.onSnapshot(snap => {
+        if (snap.metadata.fromCache && first) return;
+        const remote = {}; snap.docs.forEach(d => { if (d.exists) remote[d.id] = JSON.parse(JSON.stringify(d.data())); });
+        if (first) {
+          first = false; cloud = true;
+          // carry over anything made in this browser before the account store answered
+          for (const id in tasks) if (!remote[id]) { remote[id] = tasks[id]; const b = tasks[id]; col.doc(id).set(JSON.parse(JSON.stringify(b))).catch(() => {}); }
+        }
+        tasks = remote; saveLocal(); render(); checkDue();
+      }, () => { cloud = false; render(); });
+    } catch {}
+  }
+
+  /* ---------- reminder controls ---------- */
+  function reminderControls(key, r) {
+    const mode = r ? r.mode : "none";
+    const wrap = document.createElement("div"); wrap.className = "remind";
+    const onceMs = r && r.mode === "once" ? r.at : nextHour();
+    const dailyT = r && r.mode === "daily" ? r.time : "09:00";
+    wrap.innerHTML = `
+      <div class="seg" role="radiogroup" aria-label="Reminder">
+        ${[["none", "No reminder", "none"], ["once", "Once", "bell"], ["daily", "Every day", "repeat"]].map(([v, l, ic]) =>
+          `<input type="radio" name="${key}-mode" id="${key}-${v}" value="${v}" ${v === mode ? "checked" : ""}><label for="${key}-${v}">${ICON[ic]}${l}</label>`).join("")}
+      </div>
+      <div class="when" data-for="once" ${mode === "once" ? "" : "hidden"}>
+        <span>Remind me on</span><input type="date" id="${key}-date" value="${toDateInput(onceMs)}" aria-label="Reminder date">
+        <span>at</span><input type="time" id="${key}-time" value="${toTimeInput(onceMs)}" aria-label="Reminder time">
+      </div>
+      <div class="when" data-for="daily" ${mode === "daily" ? "" : "hidden"}>
+        <span>Remind me every day at</span><input type="time" id="${key}-dtime" value="${dailyT}" aria-label="Daily reminder time">
+        <span>until it's checked off</span>
+      </div>`;
+    wrap.addEventListener("change", e => {
+      if (e.target.name === key + "-mode") wrap.querySelectorAll(".when").forEach(w => w.hidden = w.dataset.for !== e.target.value);
+    });
+    wrap.read = () => {
+      const m = wrap.querySelector(`input[name="${key}-mode"]:checked`).value;
+      if (m === "once") {
+        const dv = $(`#${key}-date`, wrap).value, tv = $(`#${key}-time`, wrap).value;
+        if (!dv || !tv) return { error: "Pick a date and time for the reminder." };
+        const at = new Date(dv + "T" + tv).getTime();
+        if (isNaN(at)) return { error: "That date doesn't look right." };
+        if (at <= Date.now()) return { error: "Pick a time later than now." };
+        return { mode: "once", at };
+      }
+      if (m === "daily") { const tv = $(`#${key}-dtime`, wrap).value; if (!tv) return { error: "Pick a time for the daily reminder." }; return { mode: "daily", time: tv }; }
+      return { mode: "none" };
+    };
+    return wrap;
+  }
+  function dueFor(r) { return r.mode === "once" ? r.at : r.mode === "daily" ? nextDaily(r.time) : null; }
+
+  /* ---------- add form ---------- */
+  let addCtl = reminderControls("new", null);
+  $("#newRemind").appendChild(addCtl);
+  $("#addForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const text = $("#newText").value.trim(), err = $("#addErr");
+    if (!text) { err.textContent = "Type a to-do first."; err.hidden = false; $("#newText").focus(); return; }
+    const r = addCtl.read();
+    if (r.error) { err.textContent = r.error; err.hidden = false; return; }
+    err.hidden = true;
+    const t = { id: newId(), text, done: false, createdAt: Date.now(), remind: r, due: dueFor(r), snoozed: false };
+    persist(t);
+    $("#newText").value = "";
+    const fresh = reminderControls("new", null); addCtl.replaceWith(fresh); addCtl = fresh;
+    render();
+    say(r.mode === "none" ? `Got it: <b>${esc(text)}</b>` : r.mode === "once" ? `I'll remind you ${esc(fmtWhen(r.at))}.` : `I'll remind you every day at ${esc(fmtHHMM(r.time))}.`);
+    $("#newText").focus();
+  });
+
+  /* ---------- rendering ---------- */
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  let editing = null, showDone = true;
+
+  function chipsFor(t) {
+    const c = [];
+    if (t.done) { c.push(`<span class="chip quiet">${ICON.check}Done ${esc(fmtWhen(t.doneAt || Date.now()))}</span>`); return c.join(""); }
+    const r = t.remind || { mode: "none" };
+    if (t.snoozed && t.due) c.push(`<span class="chip snooze">${ICON.snooze}Snoozed until ${esc(fmtTime(t.due))}</span>`);
+    if (r.mode === "once") {
+      if (t.due && !t.snoozed) c.push(`<span class="chip">${ICON.bell}${esc(fmtWhen(t.due))}</span>`);
+      else if (!t.due) c.push(`<span class="chip quiet">${ICON.bell}Reminded ${esc(fmtWhen(r.at))}</span>`);
+    } else if (r.mode === "daily") {
+      c.push(`<span class="chip">${ICON.repeat}Every day · ${esc(fmtHHMM(r.time))}</span>`);
+    }
+    return c.join("");
+  }
+
+  function taskEl(t) {
+    const li = document.createElement("li"); li.className = "task" + (t.done ? " done" : ""); li.dataset.id = t.id;
+    li.innerHTML = `
+      <div class="task-main">
+        <button class="check" type="button" aria-pressed="${t.done}" aria-label="${t.done ? "Mark as not done" : "Check off"}: ${esc(t.text)}">${ICON.check}</button>
+        <div style="min-width:0"><div class="t-text">${esc(t.text)}</div><div class="chips">${chipsFor(t)}</div></div>
+        <button class="icon-btn" type="button" aria-label="Edit ${esc(t.text)}" aria-expanded="${editing === t.id}">${ICON.edit}</button>
+      </div>`;
+    $(".check", li).addEventListener("click", () => toggle(t.id));
+    $(".icon-btn", li).addEventListener("click", () => { editing = editing === t.id ? null : t.id; render(); if (editing) $("#edit-" + t.id + "-text")?.focus(); });
+    if (editing === t.id) li.appendChild(editorEl(t));
+    return li;
+  }
+
+  function editorEl(t) {
+    const box = document.createElement("div"); box.className = "editor";
+    box.innerHTML = `<input class="text-in" id="edit-${t.id}-text" maxlength="240" value="${esc(t.text)}" aria-label="To-do text">`;
+    const ctl = reminderControls("edit-" + t.id, t.done ? null : t.remind); if (!t.done) box.appendChild(ctl);
+    const err = document.createElement("div"); err.className = "err"; err.hidden = true; box.appendChild(err);
+    const acts = document.createElement("div"); acts.className = "editor-actions";
+    acts.innerHTML = `<button class="btn small" type="button" data-a="save">Save</button><button class="btn small ghost" type="button" data-a="cancel">Cancel</button><span class="spacer"></span><button class="btn small danger" type="button" data-a="del">Delete</button>`;
+    box.appendChild(acts);
+    acts.addEventListener("click", e => {
+      const a = e.target.closest("button")?.dataset.a; if (!a) return;
+      if (a === "cancel") { editing = null; render(); return; }
+      if (a === "del") { remove(t.id); editing = null; render(); say("Deleted."); return; }
+      const text = $("#edit-" + t.id + "-text", box).value.trim();
+      if (!text) { err.textContent = "A to-do needs some words."; err.hidden = false; return; }
+      const n = { ...t, text };
+      if (!t.done) {
+        const r = ctl.read();
+        const same = JSON.stringify(r) === JSON.stringify(t.remind);
+        if (r.error && !same) { err.textContent = r.error; err.hidden = false; return; }
+        if (!r.error && !same) { n.remind = r; n.due = dueFor(r); n.snoozed = false; }
+      }
+      persist(n); editing = null; render(); say("Saved.");
+    });
+    box.addEventListener("keydown", e => { if (e.key === "Escape") { editing = null; render(); } if (e.key === "Enter" && e.target.matches(".text-in")) acts.querySelector('[data-a="save"]').click(); });
+    return box;
+  }
+
+  function render() {
+    const all = Object.values(tasks);
+    const open = all.filter(t => !t.done).sort((a, b) => a.createdAt - b.createdAt);
+    const done = all.filter(t => t.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
+    const now = new Date();
+    $("#today").textContent = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
+    $("#clock").textContent = fmtTime(now);
+
+    const withRem = open.filter(t => t.due).sort((a, b) => a.due - b.due);
+    let s = open.length ? `<b>${open.length}</b> to do` : "All clear";
+    if (withRem.length) s += ` · next reminder ${esc(fmtWhen(withRem[0].due))}`;
+    else if (done.length && !open.length) s += ` · ${done.length} done`;
+    $("#summary").innerHTML = s;
+
+    const L = $("#lists"); L.innerHTML = "";
+    const h = (title, n, extra = "") => { const d = document.createElement("div"); d.className = "group-h"; d.innerHTML = `<h2>${title}</h2><span class="count">${extra || n}</span>`; return d; };
+    if (!open.length) {
+      const e = document.createElement("div"); e.className = "empty";
+      e.innerHTML = all.length ? `<strong>Everything's checked off.</strong><span>Frosty approves. Add something new above when it comes up.</span>`
+                               : `<strong>Nothing on the list yet.</strong><span>Type a to-do above, pick a reminder if you want one, and press Add.</span>`;
+      L.appendChild(e);
+    } else {
+      L.appendChild(h("To do", open.length));
+      const ul = document.createElement("ul"); ul.className = "tasks"; open.forEach(t => ul.appendChild(taskEl(t))); L.appendChild(ul);
+    }
+    if (done.length) {
+      const hd = h("Done", done.length);
+      const ctl = document.createElement("span"); ctl.className = "count";
+      ctl.innerHTML = `${done.length} · <button class="link" type="button" id="toggleDone">${showDone ? "Hide" : "Show"}</button> · <button class="link" type="button" id="clearDone">Clear</button>`;
+      hd.lastChild.replaceWith(ctl); L.appendChild(hd);
+      $("#toggleDone", hd).onclick = () => { showDone = !showDone; render(); };
+      $("#clearDone", hd).onclick = () => { done.forEach(t => remove(t.id)); render(); say("Cleared the done pile."); };
+      if (showDone) { const ul = document.createElement("ul"); ul.className = "tasks"; done.forEach(t => ul.appendChild(taskEl(t))); L.appendChild(ul); }
+    }
+    const note = document.createElement("div"); note.className = "store-note";
+    note.textContent = readOnly ? "You can view this list but can't save changes to it." : cloud ? "Saved to your account, so the list follows you to other devices." : "Saved in this browser.";
+    L.appendChild(note);
+    renderAlerts();
+  }
+
+  /* ---------- Frosty ---------- */
+  let bubbleTimer;
+  function say(html, ms = 3200) {
+    const b = $("#bubble"); b.innerHTML = html; b.classList.add("show");
+    clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => b.classList.remove("show"), ms);
+  }
+  function cheer() { const f = $("#frosty"); f.classList.remove("cheer"); void f.offsetWidth; f.classList.add("cheer"); }
+  const cheers = ["Nice one!", "Checked off. Lovely.", "One less thing!", "Look at you go.", "Done and dusted.", "That's the stuff."];
+
+  function toggle(id) {
+    const t = tasks[id]; if (!t) return;
+    const n = { ...t, done: !t.done, doneAt: t.done ? null : Date.now() };
+    if (n.done) { n.due = null; n.snoozed = false; dismissToast(id); cheer(); say(cheers[Math.floor(Math.random() * cheers.length)]); }
+    else { n.due = n.remind && n.remind.mode !== "none" ? (n.remind.mode === "once" ? (n.remind.at > Date.now() ? n.remind.at : null) : nextDaily(n.remind.time)) : null; }
+    persist(n); render();
+  }
+
+  /* ---------- reminders ---------- */
+  let audio = null;
+  addEventListener("pointerdown", () => { try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch {} }, { once: false, passive: true });
+  function chime() {
+    if (!audio) return;
+    try {
+      const t0 = audio.currentTime;
+      [[880, 0], [1318.5, .16], [1760, .32]].forEach(([f, d]) => {
+        const o = audio.createOscillator(), g = audio.createGain();
+        o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0, t0 + d); g.gain.linearRampToValueAtTime(.12, t0 + d + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + d + 1.4);
+        o.connect(g).connect(audio.destination); o.start(t0 + d); o.stop(t0 + d + 1.5);
+      });
+    } catch {}
+  }
+  const canNotify = () => { try { return "Notification" in window; } catch { return false; } };
+  let notifyBlocked = false;
+  function renderAlerts() {
+    const a = $("#alerts"); const anyRem = Object.values(tasks).some(t => !t.done && t.due);
+    if (!anyRem) { a.innerHTML = ""; return; }
+    let perm = "unsupported"; try { if (canNotify()) perm = Notification.permission; } catch {}
+    if (perm === "default" && !notifyBlocked) {
+      a.innerHTML = `<span>Reminders chime and pop up here while this page is open.</span><button class="link" type="button" id="askNotify">Also show desktop alerts</button>`;
+      $("#askNotify").onclick = async () => {
+        try { const r = await Notification.requestPermission(); if (r !== "granted") notifyBlocked = true; } catch { notifyBlocked = true; }
+        renderAlerts();
+      };
+    } else if (perm === "granted") a.innerHTML = `<span>Reminders show as desktop alerts and pop up here while this page is open.</span>`;
+    else a.innerHTML = `<span>Reminders chime and pop up here while this page is open.</span>`;
+  }
+
+  const shown = new Map();
+  function fire(t) {
+    const n = { ...t, snoozed: false, lastFired: Date.now(), due: t.remind.mode === "daily" ? nextDaily(t.remind.time) : null };
+    persist(n);
+    showToast(n); chime(); cheer(); say(`Reminder: <b>${esc(t.text)}</b>`, 6000);
+    try { if (canNotify() && Notification.permission === "granted") new Notification("Frosty's reminder", { body: t.text, tag: t.id }); } catch {}
+    updateTitle();
+  }
+  function showToast(t) {
+    dismissToast(t.id);
+    const el = document.createElement("div"); el.className = "toast"; el.setAttribute("role", "alertdialog"); el.setAttribute("aria-label", "Reminder: " + t.text);
+    el.innerHTML = `<div><img src="assets/frosty.webp" alt=""></div><div style="min-width:0"><div class="who">Reminder${t.remind.mode === "daily" ? " · every day" : ""}</div><div class="what">${esc(t.text)}</div>
+      <div class="acts"><button class="btn small" type="button" data-a="done">Check off</button><button class="btn small ghost" type="button" data-a="snooze">Snooze 10 min</button><button class="btn small ghost" type="button" data-a="close">Dismiss</button></div></div>`;
+    el.addEventListener("click", e => {
+      const a = e.target.closest("button")?.dataset.a; if (!a) return;
+      const cur = tasks[t.id];
+      if (a === "done" && cur && !cur.done) toggle(t.id);
+      if (a === "snooze" && cur && !cur.done) { persist({ ...cur, due: Date.now() + 10 * 60e3, snoozed: true }); render(); say("Okay, I'll ask again in 10 minutes."); }
+      dismissToast(t.id);
+    });
+    $("#toasts").appendChild(el); shown.set(t.id, el);
+    const extra = [...shown.keys()]; if (extra.length > 3) dismissToast(extra[0]);
+  }
+  function dismissToast(id) { const el = shown.get(id); if (el) { el.remove(); shown.delete(id); updateTitle(); } }
+  const baseTitle = document.title;
+  function updateTitle() { document.title = shown.size ? `(${shown.size}) ${baseTitle}` : baseTitle; }
+
+  function checkDue() {
+    const now = Date.now(); let changed = false;
+    for (const t of Object.values(tasks)) if (!t.done && t.due && t.due <= now && t.remind && t.remind.mode !== "none") { fire(t); changed = true; }
+    if (changed) render();
+  }
+
+  /* ---------- go ---------- */
+  render();
+  checkDue();
+  setInterval(() => { checkDue(); $("#clock").textContent = fmtTime(Date.now()); }, 15000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { checkDue(); render(); } });
+  setTimeout(() => say(Object.values(tasks).some(t => !t.done) ? "Here's what's on today." : "Hi! What's on the list today?"), 700);
+  connect();
+})();
+</script>
