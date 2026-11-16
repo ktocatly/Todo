@@ -1,4 +1,4 @@
-<title>Frosty's List</title>
+<title>Karen's List</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +50,15 @@ button, input, select { font: inherit; color: inherit; }
 }
 
 /* ---------- scene: the real office photo with Frosty cut out and set on the couch ---------- */
-.scene { position: relative; min-width: 0; overflow: hidden; background: #2E2620; border-right: 1px solid var(--line); }
+.scene { position: relative; min-width: 0; overflow: hidden; background: #2E2620; }
+/* the seam: a sliver of shagreen inlaid between two brass hairlines */
+.scene::after {
+  content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 9px; z-index: 2; pointer-events: none;
+  background-color: var(--table);
+  background-image: radial-gradient(circle, var(--dot) 0 1px, transparent 1.4px), radial-gradient(circle, var(--dot) 0 .9px, transparent 1.3px);
+  background-size: 5px 5px, 5px 5px; background-position: 0 0, 2.5px 2.5px;
+  box-shadow: inset 1px 0 0 var(--brass), inset -1px 0 0 var(--brass), -6px 0 14px -6px rgba(20, 12, 6, .45);
+}
 .stage { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 1206 / 892; }
 .stage .office { position: absolute; inset: 0; width: 100%; height: 100%; display: block; max-width: none; }
 .shade-l { position: absolute; border-radius: 50%; pointer-events: none; }
@@ -169,7 +177,8 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
 @media (max-width: 860px) {
   body { padding-block: 20px 32px; }
   .tray { grid-template-columns: 1fr; height: auto; }
-  .scene { height: clamp(290px, 72vw, 430px); border-right: 0; border-bottom: 1px solid var(--line); }
+  .scene { height: clamp(290px, 72vw, 430px); }
+  .scene::after { top: auto; left: 0; bottom: 0; width: auto; height: 9px; box-shadow: inset 0 1px 0 var(--brass), inset 0 -1px 0 var(--brass), 0 -6px 14px -6px rgba(20, 12, 6, .45); }
   .lists { overflow: visible; }
   .head { padding: 22px 18px 0; } .add { margin: 16px 18px 0; } .alerts { margin: 10px 18px 0; } .lists { padding: 10px 18px 22px; }
   h1 { font-size: 32px; }
@@ -197,7 +206,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   <section class="panel" aria-labelledby="title">
     <header class="head">
       <div class="eyebrow" id="today"></div>
-      <h1 id="title">Frosty's <em>List</em></h1>
+      <h1 id="title">Karen's <em>List</em></h1>
       <p class="summary" id="summary"></p>
     </header>
 
