@@ -1,0 +1,20 @@
+name = "karens-list"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# Check for due reminders once a minute.
+[triggers]
+crons = ["* * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "karens-list"
+database_id = "REPLACE_WITH_DATABASE_ID"
+
+[vars]
+# Who push services should contact about these notifications (required by the Web Push standard).
+VAPID_SUBJECT = "https://ktocatly.github.io/Todo/"
+
+# Secrets (set with `npx wrangler secret put NAME`, never written here):
+#   API_KEY            the key the page sends to read and change the list
+#   VAPID_PRIVATE_JWK  the private key that signs notifications (from scripts/generate-keys.mjs)

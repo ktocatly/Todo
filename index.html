@@ -1,5 +1,20 @@
-<title>Frosty's List</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Karen's List</title>
+<meta name="description" content="Karen's to-do list, with reminders, and Frosty on the couch.">
+<meta name="theme-color" content="#E6E1D6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1D2220" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Karen's List">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<script src="config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap">
@@ -12,27 +27,12 @@
   --shadow: rgba(48, 38, 22, .28);
   --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --f-body: "Instrument Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
-  /* scene */
-  --wall: #EFE6D8; --wall-top: #E2D7C5; --glow: #FFD48A; --glow-op: .55; --trim: #F7F3EA; --frame: #4A3426;
-  --sky: #A9CDEE; --sky-2: #DCEBF7; --brick: #D79D55; --brick-dk: #BF8340; --bwin: #F3E4C6; --bwin-lit: #F3E4C6; --tree: #6E8F4E; --star-op: 0;
-  --blind: #F5EEDF; --blind-line: #E2D6BF; --floor: #A9663A; --floor-2: #A05F35;
-  --leather: #A85E2F; --leather-lt: #B96C3B; --leather-dk: #80451F; --plush: #F6F1E5; --plush-shade: #D7CDB9; --seam: #CFC4AE;
-  --fleece: #2F7466; --fleece-dk: #23594E; --rug: #ECE2CC; --rug-line: #A3B28D; --rug-rose: #D59A86; --rug-navy: #4D5E78; --rug-sage: #8FA27A;
-  --moon-1: #DCDCD7; --moon-1c: #BDBDB6; --moon-2: #4C4F53; --moon-2c: #393B3F; --shade: #F8E9C3; --ceramic: #EFE8DA; --tabletop: #2B2B2A;
-  --pillow-1: #EDE6D6; --pillow-stripe: #B9AE98; --pillow-2: #CFC7B6; --pillow-zig: #5A5751; --pillow-terr: #C07A55; --tea: #C8642E; --glass: rgba(220, 236, 245, .55);
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --table: #1D2220; --dot: #2B322E; --brass: #C7A256; --brass-soft: #6E5A2E;
   --panel: #171C1A; --panel-2: #202624; --ink: #EDE8DD; --muted: #9CA59F; --line: #2D3431;
   --teal: #74C2B1; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
   --shadow: rgba(0, 0, 0, .55);
-  --wall: #3A3029; --wall-top: #2C241F; --glow: #FFB75E; --glow-op: .7; --trim: #4A4038; --frame: #2A1D15;
-  --sky: #18213D; --sky-2: #2B3760; --brick: #5E3F27; --brick-dk: #4C321F; --bwin: #3B2A1D; --bwin-lit: #F2C46A; --tree: #2E3D25; --star-op: .9;
-  --blind: #CDBFA6; --blind-line: #B3A58C; --floor: #6C3F22; --floor-2: #663B20;
-  --leather: #8E4E26; --leather-lt: #9E5A2E; --leather-dk: #693617; --plush: #ECE4D3; --plush-shade: #B9AE98; --seam: #C3B79F;
-  --fleece: #2E7264; --fleece-dk: #20554A; --rug: #BDB39E; --rug-line: #7D8C69; --rug-rose: #A9705D; --rug-navy: #3A475C; --rug-sage: #6C7E5A;
-  --moon-1: #BDBDB8; --moon-1c: #9E9E98; --moon-2: #3A3C40; --moon-2c: #2A2C2F; --shade: #FFDFA0; --ceramic: #D9CFBD; --tabletop: #151515;
-  --pillow-1: #CBC3B2; --pillow-stripe: #9B917D; --pillow-2: #AAA292; --pillow-zig: #3E3C38; --pillow-terr: #9C5F41; --tea: #A9522A; --glass: rgba(200, 220, 235, .35);
   color-scheme: dark;
 } }
 :root[data-theme="dark"] {
@@ -40,17 +40,14 @@
   --panel: #171C1A; --panel-2: #202624; --ink: #EDE8DD; --muted: #9CA59F; --line: #2D3431;
   --teal: #74C2B1; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
   --shadow: rgba(0, 0, 0, .55);
-  --wall: #3A3029; --wall-top: #2C241F; --glow: #FFB75E; --glow-op: .7; --trim: #4A4038; --frame: #2A1D15;
-  --sky: #18213D; --sky-2: #2B3760; --brick: #5E3F27; --brick-dk: #4C321F; --bwin: #3B2A1D; --bwin-lit: #F2C46A; --tree: #2E3D25; --star-op: .9;
-  --blind: #CDBFA6; --blind-line: #B3A58C; --floor: #6C3F22; --floor-2: #663B20;
-  --leather: #8E4E26; --leather-lt: #9E5A2E; --leather-dk: #693617; --plush: #ECE4D3; --plush-shade: #B9AE98; --seam: #C3B79F;
-  --fleece: #2E7264; --fleece-dk: #20554A; --rug: #BDB39E; --rug-line: #7D8C69; --rug-rose: #A9705D; --rug-navy: #3A475C; --rug-sage: #6C7E5A;
-  --moon-1: #BDBDB8; --moon-1c: #9E9E98; --moon-2: #3A3C40; --moon-2c: #2A2C2F; --shade: #FFDFA0; --ceramic: #D9CFBD; --tabletop: #151515;
-  --pillow-1: #CBC3B2; --pillow-stripe: #9B917D; --pillow-2: #AAA292; --pillow-zig: #3E3C38; --pillow-terr: #9C5F41; --tea: #A9522A; --glass: rgba(200, 220, 235, .35);
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
 [hidden] { display: none !important; }
 body {
   background-color: var(--table);
@@ -71,54 +68,41 @@ button, input, select { font: inherit; color: inherit; }
   margin-block: 9px;
 }
 
-/* ---------- scene ---------- */
-.scene { position: relative; min-width: 0; background: var(--wall); border-right: 1px solid var(--line); }
-.scene svg { display: block; width: 100%; height: 100%; }
+/* ---------- scene: the real office photo with Frosty cut out and set on the couch ---------- */
+.scene { position: relative; min-width: 0; overflow: hidden; background: #2E2620; }
+/* the seam: a sliver of shagreen inlaid between two brass hairlines */
+.scene::after {
+  content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 9px; z-index: 2; pointer-events: none;
+  background-color: var(--table);
+  background-image: radial-gradient(circle, var(--dot) 0 1px, transparent 1.4px), radial-gradient(circle, var(--dot) 0 .9px, transparent 1.3px);
+  background-size: 5px 5px, 5px 5px; background-position: 0 0, 2.5px 2.5px;
+  box-shadow: inset 1px 0 0 var(--brass), inset -1px 0 0 var(--brass), -6px 0 14px -6px rgba(20, 12, 6, .45);
+}
+.stage { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 1206 / 892; }
+.stage .office { position: absolute; inset: 0; width: 100%; height: 100%; display: block; max-width: none; }
+.shade-l { position: absolute; border-radius: 50%; pointer-events: none; }
+.contact { left: 45.07%; top: 55.4%; width: 7.6%; height: 1.4%; background: rgba(25, 10, 3, .78); filter: blur(3px); }
+.cast { left: 47.46%; top: 40.96%; width: 7.39%; height: 13.97%; background: rgba(30, 12, 4, .18); filter: blur(8px); }
+.cushion { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; clip-path: inset(56.05% 45.19% 40.25% 42.29%); pointer-events: none; }
+.frosty { position: absolute; left: 43.12%; top: 37.11%; width: 10.86%; height: auto; max-width: none; transform-origin: 50% 100%; filter: drop-shadow(0 1px 1px rgba(40, 20, 8, .25)); }
+.frosty.cheer { animation: hop .9s cubic-bezier(.3,.7,.4,1); }
+@keyframes hop { 0% { transform: translateY(0); } 30% { transform: translateY(-9%) rotate(-3deg); } 55% { transform: translateY(0) rotate(2deg); } 72% { transform: translateY(-3%); } 100% { transform: translateY(0); } }
+.vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(20, 14, 10, .35), transparent 22%), radial-gradient(120% 90% at 50% 45%, transparent 60%, rgba(20, 14, 10, .25)); }
 .caption {
   position: absolute; left: 16px; bottom: 14px; display: flex; gap: 8px; align-items: center;
-  background: color-mix(in srgb, var(--panel) 86%, transparent); backdrop-filter: blur(6px);
-  border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 10px; font-size: 12.5px; color: var(--muted);
-  font-variant-numeric: tabular-nums;
+  background: rgba(251, 250, 246, .88); backdrop-filter: blur(6px); color: #5D6762;
+  border-radius: 999px; padding: 5px 12px 5px 10px; font-size: 12.5px; font-variant-numeric: tabular-nums;
 }
-.caption b { color: var(--ink); font-weight: 600; }
-.caption .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 8px var(--glow); }
-
-.s-wall { fill: var(--wall); } .s-trim { fill: var(--trim); } .s-frame { fill: var(--frame); }
-.s-brick { fill: var(--brick); } .s-brick-dk { fill: var(--brick-dk); } .s-bwin { fill: var(--bwin); } .s-bwin.lit { fill: var(--bwin-lit); } .s-tree { fill: var(--tree); }
-.s-star { fill: #FFF6DA; opacity: var(--star-op); }
-.s-blind { fill: var(--blind); } .s-blind-line { stroke: var(--blind-line); stroke-width: 1; }
-.s-floor { fill: var(--floor); } .s-floor-2 { fill: var(--floor-2); }
-.s-leather { fill: var(--leather); } .s-leather-lt { fill: var(--leather-lt); } .s-leather-dk { fill: var(--leather-dk); }
-.s-plush { fill: var(--plush); } .s-plush-stroke { stroke: var(--plush); } .s-plush-shade-stroke { stroke: var(--plush-shade); } .s-plush-outline { stroke: var(--plush-shade); stroke-width: 1.4; }
-.s-seam { stroke: var(--seam); stroke-width: 1; fill: none; stroke-dasharray: 3 3; }
-.s-fleece { fill: var(--fleece); } .s-fleece-dk { fill: var(--fleece-dk); } .s-fleece-line { stroke: var(--fleece-dk); fill: none; stroke-width: 2.2; stroke-linecap: round; }
-.s-rug { fill: var(--rug); } .s-rug-line { fill: none; stroke: var(--rug-line); stroke-width: 3; }
-.s-moon-1 { fill: var(--moon-1); } .s-moon-1c { fill: var(--moon-1c); } .s-moon-2 { fill: var(--moon-2); } .s-moon-2c { fill: var(--moon-2c); }
-.s-shade { fill: var(--shade); } .s-ceramic { fill: var(--ceramic); stroke: var(--plush-shade); stroke-width: .8; }
-.s-brass { fill: var(--brass); } .s-brass-stroke { stroke: var(--brass); fill: none; }
-.s-tabletop { fill: var(--tabletop); }
-.s-p1 { fill: var(--pillow-1); } .s-p1-line { stroke: var(--pillow-stripe); stroke-width: 2.4; }
-.s-p2 { fill: var(--pillow-2); } .s-p2-line { stroke: var(--pillow-zig); stroke-width: 2.2; fill: none; stroke-linejoin: round; }
-.s-p3 { fill: var(--pillow-terr); } .s-tea { fill: var(--tea); } .s-glass { fill: var(--glass); stroke: rgba(255,255,255,.7); stroke-width: 1.2; }
-
-.flake { fill: #FFFFFF; opacity: .9; animation: fall linear infinite; }
-@keyframes fall { from { transform: translate(0, -20px); } to { transform: translate(14px, 200px); } }
-.eyes { transform-box: fill-box; transform-origin: center; animation: blink 6s infinite; }
-@keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
-.frosty { transform-box: fill-box; transform-origin: 50% 100%; }
-.frosty.cheer { animation: hop .9s cubic-bezier(.3,.7,.4,1); }
-@keyframes hop { 0% { transform: translateY(0); } 30% { transform: translateY(-14px) rotate(-3deg); } 55% { transform: translateY(0) rotate(2deg); } 72% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
-.hat { transform-box: fill-box; transform-origin: 60% 100%; }
-.frosty.cheer .hat { animation: tip .9s ease; }
-@keyframes tip { 30% { transform: rotate(-9deg) translateY(-4px); } 70% { transform: rotate(2deg); } }
-
-.bubble-wrap { display: flex; align-items: flex-end; height: 100%; }
+.caption b { color: #1F2B27; font-weight: 600; }
+.caption .dot { width: 7px; height: 7px; border-radius: 50%; background: #FFC867; box-shadow: 0 0 8px #FFC867; }
+.bubble-anchor { position: absolute; left: 48.5%; bottom: 63.9%; transform: translateX(-50%); width: max-content; max-width: 230px; }
 .bubble {
-  font-family: var(--f-body); font-size: 17px; line-height: 1.3; color: #22302B; background: #FFFDF8;
-  border: 1.5px solid #2E6F62; border-radius: 16px 16px 4px 16px; margin-left: auto; padding: 8px 12px; max-width: 100%;
-  box-shadow: 0 6px 16px -8px rgba(0,0,0,.35); opacity: 0; transform: translateY(6px) scale(.96); transform-origin: 100% 100%;
+  font-family: var(--f-body); font-size: 15px; line-height: 1.3; color: #22302B; background: #FFFDF8; position: relative;
+  border: 1.5px solid #2E6F62; border-radius: 16px; padding: 8px 12px;
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,.45); opacity: 0; transform: translateY(6px) scale(.96); transform-origin: 50% 100%;
   transition: opacity .25s ease, transform .25s ease;
 }
+.bubble::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; background: #FFFDF8; border-right: 1.5px solid #2E6F62; border-bottom: 1.5px solid #2E6F62; transform: translateX(-50%) rotate(45deg); }
 .bubble.show { opacity: 1; transform: none; }
 .bubble b { font-weight: 600; }
 
@@ -204,6 +188,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   box-shadow: 0 20px 40px -18px var(--shadow); animation: rise .35s cubic-bezier(.2,.8,.3,1);
 }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.toast img { width: 44px; height: auto; display: block; }
 .toast .who { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
 .toast .what { font-weight: 600; overflow-wrap: anywhere; margin: 2px 0 10px; }
 .toast .acts { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -211,216 +196,42 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
 @media (max-width: 860px) {
   body { padding-block: 20px 32px; }
   .tray { grid-template-columns: 1fr; height: auto; }
-  .scene { height: clamp(290px, 72vw, 430px); border-right: 0; border-bottom: 1px solid var(--line); }
+  .scene { height: clamp(290px, 72vw, 430px); }
+  .scene::after { top: auto; left: 0; bottom: 0; width: auto; height: 9px; box-shadow: inset 0 1px 0 var(--brass), inset 0 -1px 0 var(--brass), 0 -6px 14px -6px rgba(20, 12, 6, .45); }
   .lists { overflow: visible; }
   .head { padding: 22px 18px 0; } .add { margin: 16px 18px 0; } .alerts { margin: 10px 18px 0; } .lists { padding: 10px 18px 22px; }
   h1 { font-size: 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .flake, .eyes, .frosty.cheer, .frosty.cheer .hat, .toast { animation: none !important; }
+  .frosty.cheer, .toast { animation: none !important; }
   .bubble { transition: none; }
 }
+.server-form { display: grid; gap: 8px; width: 100%; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel-2); }
+.server-form label { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.server-form .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.alerts .btn.small { padding: 6px 12px; }
 </style>
+</head>
+<body>
 
 <main class="tray">
-  <section class="scene" aria-label="Frosty sitting cross-legged on the cognac couch in the office">
-    <svg viewBox="0 0 640 700" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Frosty the plush snowman sits cross-legged on a cognac leather couch under a window, between a stacked ceramic lamp and a brass floor lamp">
-      <defs>
-        <radialGradient id="glowL" cx="70" cy="340" r="230" gradientUnits="userSpaceOnUse">
-          <stop offset="0" style="stop-color:var(--glow);stop-opacity:var(--glow-op)"/><stop offset="1" style="stop-color:var(--glow);stop-opacity:0"/>
-        </radialGradient>
-        <radialGradient id="glowR" cx="600" cy="200" r="280" gradientUnits="userSpaceOnUse">
-          <stop offset="0" style="stop-color:var(--glow);stop-opacity:var(--glow-op)"/><stop offset="1" style="stop-color:var(--glow);stop-opacity:0"/>
-        </radialGradient>
-        <linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" style="stop-color:var(--wall-top)"/><stop offset=".45" style="stop-color:var(--wall)"/>
-        </linearGradient>
-        <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" style="stop-color:var(--sky)"/><stop offset="1" style="stop-color:var(--sky-2)"/>
-        </linearGradient>
-        <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFFFFF" stop-opacity=".22"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-        </linearGradient>
-        <radialGradient id="noseG" cx=".35" cy=".35" r=".8">
-          <stop offset="0" stop-color="#FFC27A"/><stop offset="1" stop-color="#E07B2A"/>
-        </radialGradient>
-        <pattern id="parquet" width="40" height="20" patternUnits="userSpaceOnUse">
-          <rect class="s-floor" width="20" height="10"/><rect class="s-floor-2" x="20" width="20" height="10"/>
-          <rect class="s-floor-2" y="10" width="20" height="10"/><rect class="s-floor" x="20" y="10" width="20" height="10"/>
-        </pattern>
-        <clipPath id="panes"><rect x="128" y="48" width="83" height="184"/><rect x="219" y="48" width="83" height="184"/></clipPath>
-        <filter id="fuzz" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="1" seed="3" result="n"/>
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.3" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-
-      <rect width="640" height="700" fill="url(#wallG)"/>
-      <rect width="640" height="700" fill="url(#glowL)"/>
-      <rect width="640" height="700" fill="url(#glowR)"/>
-
-      <g transform="translate(0,62)">
-        <!-- window -->
-        <rect class="s-frame" x="120" y="40" width="190" height="200" rx="2"/>
-        <g clip-path="url(#panes)">
-          <rect x="128" y="48" width="174" height="184" fill="url(#skyG)"/>
-          <g id="stars"></g>
-          <rect class="s-brick" x="128" y="112" width="174" height="120"/>
-          <rect class="s-brick-dk" x="128" y="108" width="174" height="6"/>
-          <g id="bwins"></g>
-          <circle class="s-tree" cx="140" cy="232" r="16"/><circle class="s-tree" cx="160" cy="236" r="14"/><circle class="s-tree" cx="132" cy="220" r="10"/>
-          <g id="snow"></g>
-        </g>
-        <rect class="s-frame" x="211" y="44" width="8" height="192"/>
-        <rect class="s-blind" x="124" y="44" width="182" height="60"/>
-        <g id="blindlines"></g>
-        <rect class="s-trim" x="124" y="102" width="182" height="5"/>
-        <rect class="s-trim" x="112" y="238" width="206" height="8" rx="1"/>
-        <rect class="s-trim" x="118" y="246" width="194" height="44"/>
-        <!-- plant on sill -->
-        <g>
-          <path class="s-tree" d="M137 222 C 122 200, 126 182, 136 176 C 140 192, 142 204, 140 222 Z"/>
-          <path class="s-tree" d="M141 222 C 150 196, 164 188, 172 190 C 166 204, 154 214, 144 222 Z"/>
-          <path class="s-tree" d="M139 222 C 132 210, 116 206, 110 210 C 118 218, 128 222, 139 224 Z"/>
-          <rect class="s-ceramic" x="130" y="220" width="20" height="18" rx="3"/>
-        </g>
-        <!-- moon plates -->
-        <g>
-          <circle class="s-moon-1" cx="438" cy="96" r="27" stroke="rgba(0,0,0,.12)" stroke-width="2"/>
-          <circle class="s-moon-1c" cx="430" cy="88" r="7"/><circle class="s-moon-1c" cx="447" cy="104" r="5"/><circle class="s-moon-1c" cx="444" cy="84" r="3"/><circle class="s-moon-1c" cx="426" cy="107" r="4"/>
-          <circle class="s-moon-2" cx="450" cy="172" r="25" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
-          <circle class="s-moon-2c" cx="443" cy="165" r="6"/><circle class="s-moon-2c" cx="458" cy="180" r="7"/><circle class="s-moon-2c" cx="456" cy="161" r="3"/>
-        </g>
-        <!-- floor -->
-        <rect x="0" y="396" width="640" height="260" fill="url(#parquet)"/>
-        <rect class="s-trim" x="0" y="390" width="640" height="7"/>
-        <polygon class="s-rug" points="58,616 138,436 520,436 612,616"/>
-        <polygon class="s-rug-line" points="80,604 146,448 512,448 588,604"/>
-        <polygon class="s-rug-line" points="94,596 152,456 506,456 574,596" style="stroke-width:1.4"/>
-        <g id="rugmotifs"></g>
-
-        <!-- side table + stacked lamp (left) -->
-        <g>
-          <line class="s-brass-stroke" x1="52" y1="342" x2="42" y2="412" stroke-width="2.5"/>
-          <line class="s-brass-stroke" x1="88" y1="342" x2="98" y2="412" stroke-width="2.5"/>
-          <line class="s-brass-stroke" x1="70" y1="344" x2="70" y2="408" stroke-width="2.5"/>
-          <ellipse class="s-brass" cx="70" cy="340" rx="36" ry="6"/>
-          <circle class="s-ceramic" cx="70" cy="324" r="13"/><circle class="s-ceramic" cx="70" cy="303" r="11"/>
-          <circle class="s-ceramic" cx="70" cy="285" r="10"/><circle class="s-ceramic" cx="70" cy="270" r="8"/>
-          <line x1="70" y1="262" x2="70" y2="246" stroke="#8F8676" stroke-width="2"/>
-          <path class="s-shade" d="M40 250 L100 250 L93 206 L47 206 Z"/>
-          <rect x="99" y="320" width="14" height="18" rx="2" fill="#B07A52"/><path d="M99 320 L106 311 L113 320 Z" fill="#8C5C3C"/>
-        </g>
-
-        <!-- couch -->
-        <ellipse cx="345" cy="398" rx="196" ry="8" fill="rgba(0,0,0,.18)"/>
-        <rect x="188" y="370" width="5" height="26" fill="#2A2522"/><rect x="497" y="370" width="5" height="26" fill="#2A2522"/>
-        <rect class="s-leather-dk" x="172" y="338" width="346" height="36" rx="8"/>
-        <rect class="s-leather-dk" x="178" y="244" width="334" height="84" rx="14"/>
-        <rect class="s-leather" x="188" y="248" width="155" height="74" rx="12"/>
-        <rect class="s-leather" x="347" y="248" width="155" height="74" rx="12"/>
-        <rect x="188" y="248" width="155" height="40" rx="12" fill="url(#sheen)"/>
-        <rect x="347" y="248" width="155" height="40" rx="12" fill="url(#sheen)"/>
-        <!-- pillows -->
-        <g transform="rotate(-9 470 288)">
-          <rect class="s-p1" x="438" y="262" width="64" height="54" rx="10"/>
-          <line class="s-p1-line" x1="446" y1="274" x2="494" y2="274"/><line class="s-p1-line" x1="446" y1="284" x2="494" y2="284"/>
-          <line class="s-p1-line" x1="446" y1="294" x2="494" y2="294"/><line class="s-p1-line" x1="446" y1="304" x2="494" y2="304"/>
-        </g>
-        <g transform="rotate(7 480 306)">
-          <rect class="s-p2" x="452" y="282" width="56" height="48" rx="9"/>
-          <polyline class="s-p2-line" points="458,296 466,290 474,296 482,290 490,296 498,290 504,296"/>
-          <polyline class="s-p2-line" points="458,308 466,302 474,308 482,302 490,308 498,302 504,308"/>
-          <polyline class="s-p2-line" points="458,320 466,314 474,320 482,314 490,320 498,314 504,320"/>
-        </g>
-        <rect class="s-p3" x="200" y="276" width="48" height="42" rx="10" transform="rotate(-10 224 297)"/>
-        <rect class="s-leather-lt" x="190" y="316" width="155" height="34" rx="9"/>
-        <rect class="s-leather-lt" x="345" y="316" width="155" height="34" rx="9"/>
-        <rect x="190" y="316" width="310" height="12" rx="6" fill="url(#sheen)"/>
-        <rect class="s-leather" x="164" y="290" width="34" height="84" rx="13"/>
-        <rect class="s-leather" x="492" y="290" width="34" height="84" rx="13"/>
-        <rect x="164" y="290" width="34" height="30" rx="13" fill="url(#sheen)"/>
-        <rect x="492" y="290" width="34" height="30" rx="13" fill="url(#sheen)"/>
-
-        <!-- Frosty, cross-legged -->
-        <g transform="translate(46,0)">
-          <g class="frosty" id="frosty">
-            <ellipse cx="300" cy="352" rx="66" ry="6" fill="rgba(0,0,0,.2)"/>
-            <!-- body -->
-            <ellipse class="s-plush s-plush-outline" cx="300" cy="284" rx="44" ry="50"/>
-            <path class="s-seam" d="M300 252 L300 330"/>
-            <!-- arms resting on knees -->
-            <ellipse class="s-plush s-plush-outline" cx="258" cy="300" rx="14" ry="27" transform="rotate(28 258 300)"/>
-            <ellipse class="s-plush s-plush-outline" cx="342" cy="300" rx="14" ry="27" transform="rotate(-28 342 300)"/>
-            <!-- buttons -->
-            <circle cx="300" cy="272" r="4.6" fill="#141414"/><circle cx="300" cy="294" r="4.6" fill="#141414"/>
-            <circle cx="298.6" cy="270.6" r="1.3" fill="#FFFFFF" opacity=".6"/><circle cx="298.6" cy="292.6" r="1.3" fill="#FFFFFF" opacity=".6"/>
-            <!-- back leg (crosses right to left) -->
-            <path class="s-plush-shade-stroke" d="M338 320 Q 318 352 266 344" fill="none" stroke-width="29" stroke-linecap="round"/>
-            <path class="s-plush-stroke" d="M338 320 Q 318 352 266 344" fill="none" stroke-width="26" stroke-linecap="round"/>
-            <!-- front leg (crosses left to right) -->
-            <path class="s-plush-shade-stroke" d="M262 322 Q 282 352 336 346" fill="none" stroke-width="29" stroke-linecap="round"/>
-            <path class="s-plush-stroke" d="M262 322 Q 282 352 336 346" fill="none" stroke-width="26" stroke-linecap="round"/>
-            <path class="s-seam" d="M276 338 Q 300 350 330 346"/>
-            <!-- head -->
-            <circle class="s-plush s-plush-outline" cx="300" cy="200" r="39"/>
-            <path class="s-seam" d="M300 172 C 296 196, 298 222, 300 238" opacity=".6"/>
-            <g class="eyes"><circle cx="287" cy="203" r="3.4" fill="#141414"/><circle cx="316" cy="201" r="3.4" fill="#141414"/></g>
-            <ellipse cx="303" cy="214" rx="6.5" ry="5.4" fill="url(#noseG)"/>
-            <path d="M281 221 Q 300 238 321 220" fill="none" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="4 1.5"/>
-            <!-- scarf -->
-            <g filter="url(#fuzz)">
-              <path class="s-fleece" d="M262 232 C 282 246, 320 246, 340 230 L 343 245 C 322 262, 280 262, 260 247 Z"/>
-              <path class="s-fleece-dk" d="M296 246 C 290 268, 284 284, 280 300 L 296 304 C 300 286, 304 268, 308 250 Z"/>
-              <path class="s-fleece" d="M306 248 C 318 262, 330 276, 342 290 L 354 280 C 342 266, 330 254, 316 244 Z"/>
-              <circle class="s-fleece" cx="304" cy="250" r="9"/>
-              <g class="s-fleece-line"><line x1="282" y1="300" x2="281" y2="309"/><line x1="287" y1="301" x2="286" y2="310"/><line x1="292" y1="302" x2="291" y2="311"/>
-                <line x1="344" y1="290" x2="349" y2="297"/><line x1="348" y1="286" x2="353" y2="293"/><line x1="352" y1="283" x2="357" y2="290"/></g>
-              <!-- hat -->
-              <g class="hat">
-                <path class="s-fleece" d="M264 190 C 258 150, 300 136, 332 148 C 352 156, 356 184, 342 196 C 320 186, 290 184, 264 190 Z"/>
-                <path class="s-fleece-dk" d="M238 198 C 246 182, 272 174, 304 180 C 284 188, 270 198, 262 212 C 252 210, 242 205, 238 198 Z"/>
-                <path class="s-fleece-line" d="M270 182 C 292 176, 318 178, 338 188" opacity=".7"/>
-              </g>
-            </g>
-          </g>
-          <foreignObject x="150" y="20" width="250" height="120">
-            <div xmlns="http://www.w3.org/1999/xhtml" class="bubble-wrap"><div class="bubble" id="bubble" role="status" aria-live="polite"></div></div>
-          </foreignObject>
-        </g>
-
-        <!-- coffee table with tea + snow globe -->
-        <g>
-          <ellipse cx="470" cy="606" rx="40" ry="6" fill="rgba(0,0,0,.25)"/>
-          <rect class="s-tabletop" x="466" y="482" width="8" height="122"/>
-          <ellipse class="s-tabletop" cx="470" cy="604" rx="30" ry="5"/>
-          <ellipse class="s-tabletop" cx="470" cy="480" rx="84" ry="20"/>
-          <path class="s-tea" d="M430 438 L452 438 L449 474 L433 474 Z" opacity=".9"/>
-          <path d="M430 438 L452 438 L449 474 L433 474 Z" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>
-          <rect x="428" y="433" width="26" height="6" rx="2" fill="rgba(255,255,255,.7)"/>
-          <line x1="444" y1="433" x2="452" y2="408" stroke="#D9C9A8" stroke-width="2.4"/>
-          <rect x="488" y="458" width="32" height="16" rx="2" fill="#141414"/>
-          <circle class="s-glass" cx="504" cy="442" r="17"/>
-          <circle cx="504" cy="450" r="5.5" fill="#FFFFFF"/><circle cx="504" cy="441" r="3.8" fill="#FFFFFF"/>
-          <circle cx="498" cy="434" r="1" fill="#FFFFFF"/><circle cx="511" cy="437" r="1" fill="#FFFFFF"/><circle cx="507" cy="430" r=".9" fill="#FFFFFF"/>
-        </g>
-
-        <!-- floor lamp (right) -->
-        <g>
-          <line class="s-brass-stroke" x1="600" y1="150" x2="600" y2="604" stroke-width="4"/>
-          <ellipse class="s-brass" cx="600" cy="606" rx="28" ry="5"/>
-          <path class="s-shade" d="M552 62 L648 62 L648 150 L552 150 Z"/>
-          <path class="s-brass-stroke" d="M552 62 L648 62 M552 150 L648 150" stroke-width="2.5"/>
-        </g>
-      </g>
-    </svg>
+  <section class="scene" id="scene" aria-label="Frosty standing on the cognac leather couch in the office">
+    <div class="stage" id="stage">
+      <img class="office" src="assets/office.jpg" alt="The office: a cognac leather couch under the window, a cream swivel chair, stacked ceramic lamp, moon plates and a patterned rug">
+      <span class="shade-l cast" aria-hidden="true"></span>
+      <span class="shade-l contact" aria-hidden="true"></span>
+      <img class="frosty" id="frosty" src="assets/frosty.webp" alt="Frosty the plush snowman, in his green hat and scarf, standing on the couch cushion">
+      <img class="cushion" src="assets/office.jpg" alt="" aria-hidden="true">
+      <div class="bubble-anchor"><div class="bubble" id="bubble" role="status" aria-live="polite"></div></div>
+    </div>
+    <div class="vignette" aria-hidden="true"></div>
     <div class="caption"><span class="dot" aria-hidden="true"></span><span><b>Frosty</b>, on the couch</span><span aria-hidden="true">·</span><span id="clock"></span></div>
   </section>
 
   <section class="panel" aria-labelledby="title">
     <header class="head">
       <div class="eyebrow" id="today"></div>
-      <h1 id="title">Frosty's <em>List</em></h1>
+      <h1 id="title">Karen's <em>List</em></h1>
       <p class="summary" id="summary"></p>
     </header>
 
@@ -443,42 +254,26 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
 <script>
 (() => {
   const $ = (s, el = document) => el.querySelector(s);
-  const NS = "http://www.w3.org/2000/svg";
-  const ICON = {
+    const ICON = {
     bell: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V7a4 4 0 0 1 8 0v4l1.2 1.4H2.8L4 11Z"/><path d="M6.6 14a1.5 1.5 0 0 0 2.8 0"/></svg>',
     repeat: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5V6a2.5 2.5 0 0 1 2.5-2.5h7.5"/><path d="m10.5 1.5 2 2-2 2"/><path d="M13.5 8.5V10a2.5 2.5 0 0 1-2.5 2.5H3.5"/><path d="m5.5 14.5-2-2 2-2"/></svg>',
     none: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="5.5"/><path d="M4.2 11.8 11.8 4.2"/></svg>',
     check: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8.5 3.2 3L13 4.5"/></svg>',
     edit: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.8 2.7a1.6 1.6 0 0 1 2.3 2.3L5.5 12.6 2.5 13.5l.9-3 7.4-7.8Z"/></svg>',
     snooze: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8.5" r="5.5"/><path d="M8 5.8v2.9l1.8 1.2"/></svg>',
-    head: '<svg viewBox="0 0 44 44"><circle cx="22" cy="25" r="16" fill="#F6F1E5" stroke="#D7CDB9"/><path d="M8 20c2-9 14-13 24-9 5 2 6 8 3 10-9-3-18-3-27-1Z" fill="#2F7466"/><circle cx="17" cy="25" r="1.6" fill="#141414"/><circle cx="27" cy="24" r="1.6" fill="#141414"/><ellipse cx="22.6" cy="29" rx="2.6" ry="2.1" fill="#E58A3A"/><path d="M15 32q7 6 14 0" fill="none" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round"/></svg>'
   };
 
-  /* ---------- scene details ---------- */
-  function svgEl(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; }
-  (function buildScene() {
-    const bl = $("#blindlines"); for (let y = 54; y < 102; y += 9) svgEl("line", { class: "s-blind-line", x1: 124, x2: 306, y1: y, y2: y }, bl);
-    const bw = $("#bwins"); const lit = new Set([2, 7, 9, 14, 19]); let i = 0;
-    for (const y of [124, 152, 180, 208]) for (const x of [136, 162, 188, 228, 254, 280]) svgEl("rect", { class: "s-bwin" + (lit.has(i++) ? " lit" : ""), x, y, width: 13, height: 17, rx: 1 }, bw);
-    const st = $("#stars"); [[140,60],[170,72],[196,56],[236,64],[262,78],[290,58],[150,90],[280,92]].forEach(([x, y]) => svgEl("circle", { class: "s-star", cx: x, cy: y, r: 1.1 }, st));
-    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    const sn = $("#snow");
-    for (let k = 0; k < 26; k++) {
-      const c = svgEl("circle", { class: "flake", cx: 120 + rnd() * 180, cy: 40 + rnd() * 30, r: 0.8 + rnd() * 1.6 }, sn);
-      c.style.animationDuration = (6 + rnd() * 7).toFixed(1) + "s"; c.style.animationDelay = (-rnd() * 12).toFixed(1) + "s";
-    }
-    const rm = $("#rugmotifs"); const cols = ["--rug-rose", "--rug-sage", "--rug-navy"];
-    for (let row = 0; row < 6; row++) {
-      const y = 470 + row * 22, t = (y - 436) / 180, left = 138 - 80 * t + 34, right = 520 + 92 * t - 34;
-      const n = 6 + row;
-      for (let j = 0; j < n; j++) {
-        const x = left + (right - left) * ((j + (row % 2 ? .5 : .2)) / n), col = cols[(j + row) % 3], s = 1 + t * .8;
-        const g = svgEl("g", { transform: `translate(${x.toFixed(1)} ${y}) scale(${s.toFixed(2)} ${(s * .6).toFixed(2)})` }, rm);
-        for (const [dx, dy] of [[0,-4],[4,0],[0,4],[-4,0]]) { const p = svgEl("circle", { cx: dx, cy: dy, r: 2.6 }, g); p.style.fill = `var(${col})`; }
-        const ctr = svgEl("circle", { cx: 0, cy: 0, r: 1.6 }, g); ctr.style.fill = "var(--rug-line)";
-      }
-    }
-  })();
+  /* ---------- scene layout: cover the panel with the photo, keeping Frosty in view ---------- */
+  const scene = $("#scene"), stage = $("#stage"), RATIO = 1206 / 892;
+  function layout() {
+    const cw = scene.clientWidth, ch = scene.clientHeight; if (!cw || !ch) return;
+    const zoom = cw < 600 ? 1.85 : 1.12;
+    const W = Math.max(cw, ch * RATIO) * zoom, H = W / RATIO;
+    const L = Math.min(0, Math.max(cw - W, cw / 2 - .485 * W)), T = Math.min(0, Math.max(ch - H, ch * .56 - .5 * H));
+    Object.assign(stage.style, { width: W + "px", height: H + "px", left: L + "px", top: T + "px" });
+  }
+  layout();
+  try { new ResizeObserver(layout).observe(scene); } catch { addEventListener("resize", layout); }
 
   /* ---------- time helpers ---------- */
   const fmtTime = ms => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
@@ -498,44 +293,73 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   function nextHour() { const d = new Date(); d.setMinutes(0, 0, 0); d.setHours(d.getHours() + 1); return d.getTime(); }
 
   /* ---------- state + storage ---------- */
-  const LS = "frosty-list-v1";
-  let tasks = {};
-  let col = null, cloud = false, readOnly = false;
-  try { tasks = JSON.parse(localStorage.getItem(LS) || "{}") || {}; } catch { tasks = {}; }
-  const saveLocal = () => { try { localStorage.setItem(LS, JSON.stringify(tasks)); } catch {} };
+  // The list is always kept on this device. When a reminder server is connected it is also
+  // kept there, which is what lets the server send notifications while the page is closed.
+  const LS = "frosty-list-v1", LS_SERVER = "karens-list-server", LS_PENDING = "karens-list-pending";
+  const lsGet = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v ?? d; } catch { return d; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  const CONFIG = window.KAREN_CONFIG || {};
+  let tasks = lsGet(LS, {});
+  let server = lsGet(LS_SERVER, null);          // { url, key }
+  let pending = lsGet(LS_PENDING, {});          // id -> +n (save) or -n (delete), not yet on the server
+  let rev = Math.max(0, ...Object.values(pending).map(v => Math.abs(v)));
+  let syncError = false;
+  const saveLocal = () => lsSet(LS, tasks);
   const newId = () => "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-  const writeChain = {};
+  const localTz = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"; } catch { return "UTC"; } };
+
+  async function api(method, path, body, s = server) {
+    let res;
+    try {
+      res = await fetch(s.url.replace(/\/+$/, "") + path, { method, headers: { authorization: "Bearer " + s.key, "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
+    } catch { throw new Error("Couldn't reach the reminder server. Check the address and your connection."); }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(res.status === 401 ? "That key isn't right." : (data.error || `The reminder server answered ${res.status}.`));
+    return data;
+  }
+  let flushing = null;
+  function flush() {
+    if (!server) return Promise.resolve();
+    if (flushing) return flushing;
+    flushing = (async () => {
+      for (const id of Object.keys(pending)) {
+        const v = pending[id];
+        if (v < 0) await api("DELETE", "/api/tasks/" + encodeURIComponent(id));
+        else if (tasks[id]) await api("PUT", "/api/tasks/" + encodeURIComponent(id), tasks[id]);
+        if (pending[id] === v) { delete pending[id]; lsSet(LS_PENDING, pending); }
+      }
+    })().then(() => { syncError = false; }, () => { syncError = true; })
+      .finally(() => { flushing = null; if (!syncError && Object.keys(pending).length) flush(); render(); });
+    return flushing;
+  }
   function persist(t) {
     tasks[t.id] = t; saveLocal();
-    if (col && !readOnly) {
-      const body = JSON.parse(JSON.stringify(t));
-      writeChain[t.id] = (writeChain[t.id] || Promise.resolve()).then(() => col.doc(t.id).set(body)).catch(e => { if (e && e.code === "invalid_argument") { readOnly = true; render(); } });
-    }
+    if (server) { pending[t.id] = ++rev; lsSet(LS_PENDING, pending); flush(); }
   }
   function remove(id) {
     delete tasks[id]; saveLocal();
-    if (col && !readOnly) writeChain[id] = (writeChain[id] || Promise.resolve()).then(() => col.doc(id).delete()).catch(() => {});
+    if (server) { pending[id] = -(++rev); lsSet(LS_PENDING, pending); flush(); }
   }
-
-  async function connect() {
+  async function load() {
+    if (!server) return;
+    await flush();
     try {
-      if (!window.claude || !claude.use) return;
-      const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
-      if (!db || !user) return;
-      const uid = await user.id(); if (!uid) return;
-      col = db.collection("data/users/" + uid);
-      let first = true;
-      col.onSnapshot(snap => {
-        if (snap.metadata.fromCache && first) return;
-        const remote = {}; snap.docs.forEach(d => { if (d.exists) remote[d.id] = JSON.parse(JSON.stringify(d.data())); });
-        if (first) {
-          first = false; cloud = true;
-          // carry over anything made in this browser before the account store answered
-          for (const id in tasks) if (!remote[id]) { remote[id] = tasks[id]; const b = tasks[id]; col.doc(id).set(JSON.parse(JSON.stringify(b))).catch(() => {}); }
-        }
-        tasks = remote; saveLocal(); render(); checkDue();
-      }, () => { cloud = false; render(); });
-    } catch {}
+      const { tasks: list } = await api("GET", "/api/tasks");
+      const next = {}; (list || []).forEach(t => { next[t.id] = t; });
+      for (const id in pending) { if (pending[id] > 0 && tasks[id]) next[id] = tasks[id]; else if (pending[id] < 0) delete next[id]; }
+      tasks = next; saveLocal(); syncError = false;
+    } catch { syncError = true; }
+    render();
+  }
+  async function connectServer(url, key) {
+    const s = { url: String(url).trim().replace(/\/+$/, ""), key: String(key).trim() };
+    if (!/^https:\/\//.test(s.url) && !/^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(s.url)) throw new Error("The server address should start with https://");
+    if (!s.key) throw new Error("Paste the key from the setup guide.");
+    await api("GET", "/api/tasks", null, s);
+    server = s; lsSet(LS_SERVER, s);
+    for (const id in tasks) pending[id] = ++rev;     // bring this device's to-dos along
+    lsSet(LS_PENDING, pending);
+    await load();
   }
 
   /* ---------- reminder controls ---------- */
@@ -570,7 +394,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
         if (at <= Date.now()) return { error: "Pick a time later than now." };
         return { mode: "once", at };
       }
-      if (m === "daily") { const tv = $(`#${key}-dtime`, wrap).value; if (!tv) return { error: "Pick a time for the daily reminder." }; return { mode: "daily", time: tv }; }
+      if (m === "daily") { const tv = $(`#${key}-dtime`, wrap).value; if (!tv) return { error: "Pick a time for the daily reminder." }; return { mode: "daily", time: tv, tz: localTz() }; }
       return { mode: "none" };
     };
     return wrap;
@@ -645,7 +469,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
       const n = { ...t, text };
       if (!t.done) {
         const r = ctl.read();
-        const same = JSON.stringify(r) === JSON.stringify(t.remind);
+        const same = JSON.stringify({ ...r, tz: undefined }) === JSON.stringify({ ...t.remind, tz: undefined });
         if (r.error && !same) { err.textContent = r.error; err.hidden = false; return; }
         if (!r.error && !same) { n.remind = r; n.due = dueFor(r); n.snoozed = false; }
       }
@@ -690,7 +514,12 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
       if (showDone) { const ul = document.createElement("ul"); ul.className = "tasks"; done.forEach(t => ul.appendChild(taskEl(t))); L.appendChild(ul); }
     }
     const note = document.createElement("div"); note.className = "store-note";
-    note.textContent = readOnly ? "You can view this list but can't save changes to it." : cloud ? "Saved to your account, so the list follows you to other devices." : "Saved in this browser.";
+    if (!server) note.textContent = "Saved on this device.";
+    else {
+      note.innerHTML = (syncError ? "Couldn't reach the reminder server. Changes are saved on this device and will sync when it's back." : "Synced with your reminder server.")
+        + ` <button class="link" type="button" id="serverSettings">Server settings</button>`;
+      $("#serverSettings", note).onclick = () => { showServerForm = true; renderAlerts(true); $("#alerts").scrollIntoView({ block: "nearest" }); };
+    }
     L.appendChild(note);
     renderAlerts();
   }
@@ -701,7 +530,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     const b = $("#bubble"); b.innerHTML = html; b.classList.add("show");
     clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => b.classList.remove("show"), ms);
   }
-  function cheer() { const f = $("#frosty"); f.classList.remove("cheer"); void f.getBBox(); f.classList.add("cheer"); }
+  function cheer() { const f = $("#frosty"); f.classList.remove("cheer"); void f.offsetWidth; f.classList.add("cheer"); }
   const cheers = ["Nice one!", "Checked off. Lovely.", "One less thing!", "Look at you go.", "Done and dusted.", "That's the stuff."];
 
   function toggle(id) {
@@ -726,34 +555,102 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
       });
     } catch {}
   }
-  const canNotify = () => { try { return "Notification" in window; } catch { return false; } };
-  let notifyBlocked = false;
-  function renderAlerts() {
-    const a = $("#alerts"); const anyRem = Object.values(tasks).some(t => !t.done && t.due);
-    if (!anyRem) { a.innerHTML = ""; return; }
-    let perm = "unsupported"; try { if (canNotify()) perm = Notification.permission; } catch {}
-    if (perm === "default" && !notifyBlocked) {
-      a.innerHTML = `<span>Reminders chime and pop up here while this page is open.</span><button class="link" type="button" id="askNotify">Also show desktop alerts</button>`;
-      $("#askNotify").onclick = async () => {
-        try { const r = await Notification.requestPermission(); if (r !== "granted") notifyBlocked = true; } catch { notifyBlocked = true; }
-        renderAlerts();
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const standalone = navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
+  const pushSupported = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  let pushOn = false, pushErr = "", showServerForm = false;
+  const unb64u = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((s.length + 3) % 4)), c => c.charCodeAt(0));
+
+  function renderAlerts(force) {
+    const a = $("#alerts");
+    if (!force && showServerForm && $("#serverForm", a)) return;      // don't wipe what's being typed
+    if (showServerForm) {
+      const needUrl = !CONFIG.serverUrl || (server && server.url !== CONFIG.serverUrl.replace(/\/+$/, ""));
+      a.innerHTML = `<form class="server-form" id="serverForm" autocomplete="off">
+        <strong>${server ? "Reminder server" : "Connect your reminder server"}</strong>
+        <span>${server ? "Connected to " + esc(server.url) + "." : "Paste the key from the setup guide. You only do this once on each device."}</span>
+        <div ${needUrl ? "" : "hidden"}><label for="srvUrl">Server address</label><input class="text-in" id="srvUrl" type="url" inputmode="url" placeholder="https://karens-list.example.workers.dev" value="${esc((server && server.url) || CONFIG.serverUrl || "")}"></div>
+        <div><label for="srvKey">Key</label><input class="text-in" id="srvKey" type="password" autocapitalize="off" spellcheck="false" placeholder="Paste key" value="${esc((server && server.key) || "")}"></div>
+        <div class="err" id="srvErr" hidden></div>
+        <div class="row"><button class="btn small" type="submit">${server ? "Save" : "Connect"}</button><button class="btn small ghost" type="button" id="srvCancel">Cancel</button>
+          ${server ? `<span style="flex:1"></span><button class="btn small danger" type="button" id="srvForget">Disconnect</button>` : ""}</div>
+      </form>`;
+      const f = $("#serverForm", a), err = $("#srvErr", a);
+      f.onsubmit = async e => {
+        e.preventDefault(); err.hidden = true; const btn = f.querySelector("[type=submit]"); btn.disabled = true;
+        try { await connectServer($("#srvUrl", f).value, $("#srvKey", f).value); showServerForm = false; renderAlerts(true); refreshPush(); say("Connected. Your list is on the reminder server now."); }
+        catch (x) { err.textContent = x.message; err.hidden = false; btn.disabled = false; }
       };
-    } else if (perm === "granted") a.innerHTML = `<span>Reminders show as desktop alerts and pop up here while this page is open.</span>`;
-    else a.innerHTML = `<span>Reminders chime and pop up here while this page is open.</span>`;
+      $("#srvCancel", f).onclick = () => { showServerForm = false; renderAlerts(true); };
+      if (server) $("#srvForget", f).onclick = () => { server = null; lsSet(LS_SERVER, null); pending = {}; lsSet(LS_PENDING, {}); pushOn = false; showServerForm = false; render(); };
+      return;
+    }
+    if (!server) {
+      a.innerHTML = `<span>Reminders chime here while this page is open.</span><button class="link" type="button" id="openServer">Get notifications on your phone</button>`;
+      $("#openServer", a).onclick = () => { showServerForm = true; renderAlerts(true); };
+      return;
+    }
+    if (isIOS && !standalone) {
+      a.innerHTML = `<span>For notifications on your iPhone: tap the Share button, choose <b>Add to Home Screen</b>, then open Karen's List from your home screen.</span>`;
+      return;
+    }
+    if (!pushSupported) { a.innerHTML = `<span>This browser can't show notifications. Reminders chime here while the page is open.</span>`; return; }
+    if (pushOn) {
+      a.innerHTML = `<span>Notifications are on for this device.</span><button class="link" type="button" id="testPush">Send a test</button>`;
+      $("#testPush", a).onclick = async () => {
+        try { const r = await api("POST", "/api/test"); say(r.sent ? "Sent! It should arrive in a few seconds." : "The server couldn't reach this device. Try turning notifications off and on."); }
+        catch (x) { say(esc(x.message)); }
+      };
+      return;
+    }
+    if (Notification.permission === "denied") {
+      a.innerHTML = isIOS ? `<span>Notifications are turned off. To turn them on, open the Settings app, tap Notifications, then Karen's List.</span>`
+                          : `<span>Notifications are blocked for this site. Allow them in your browser's site settings, then reload.</span>`;
+      return;
+    }
+    a.innerHTML = `<button class="btn small" type="button" id="enablePush">Turn on notifications</button><span>Get a notification on this device when a reminder is due, even when Karen's List is closed.</span>${pushErr ? `<span class="err">${esc(pushErr)}</span>` : ""}`;
+    $("#enablePush", a).onclick = enablePush;
+  }
+
+  async function enablePush(e) {
+    const btn = e && e.currentTarget; if (btn) btn.disabled = true;
+    pushErr = "";
+    try {
+      const perm = await Notification.requestPermission();
+      if (perm !== "granted") { renderAlerts(); return; }
+      const reg = await navigator.serviceWorker.register("sw.js");
+      await navigator.serviceWorker.ready;
+      const { publicKey } = await api("GET", "/api/vapid");
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: unb64u(publicKey) });
+      await api("POST", "/api/subscribe", sub.toJSON());
+      pushOn = true; say("Notifications are on. I'll ping you when something's due.");
+    } catch (x) { pushErr = "Couldn't turn on notifications: " + (x.message || "unknown problem") + "."; }
+    renderAlerts();
+  }
+  async function refreshPush() {
+    if (!pushSupported || !server || Notification.permission !== "granted") { renderAlerts(); return; }
+    try {
+      const reg = await navigator.serviceWorker.getRegistration();
+      const sub = reg && await reg.pushManager.getSubscription();
+      pushOn = !!sub;
+      if (sub) api("POST", "/api/subscribe", sub.toJSON()).catch(() => {});
+    } catch {}
+    renderAlerts();
   }
 
   const shown = new Map();
+  function alertFor(t) {
+    showToast(t); chime(); cheer(); say(`Reminder: <b>${esc(t.text)}</b>`, 6000); updateTitle();
+  }
   function fire(t) {
     const n = { ...t, snoozed: false, lastFired: Date.now(), due: t.remind.mode === "daily" ? nextDaily(t.remind.time) : null };
-    persist(n);
-    showToast(n); chime(); cheer(); say(`Reminder: <b>${esc(t.text)}</b>`, 6000);
-    try { if (canNotify() && Notification.permission === "granted") new Notification("Frosty's reminder", { body: t.text, tag: t.id }); } catch {}
-    updateTitle();
+    persist(n); alertFor(n);
   }
   function showToast(t) {
     dismissToast(t.id);
     const el = document.createElement("div"); el.className = "toast"; el.setAttribute("role", "alertdialog"); el.setAttribute("aria-label", "Reminder: " + t.text);
-    el.innerHTML = `<div>${ICON.head}</div><div style="min-width:0"><div class="who">Reminder${t.remind.mode === "daily" ? " · every day" : ""}</div><div class="what">${esc(t.text)}</div>
+    el.innerHTML = `<div><img src="assets/frosty.webp" alt=""></div><div style="min-width:0"><div class="who">Reminder${t.remind.mode === "daily" ? " · every day" : ""}</div><div class="what">${esc(t.text)}</div>
       <div class="acts"><button class="btn small" type="button" data-a="done">Check off</button><button class="btn small ghost" type="button" data-a="snooze">Snooze 10 min</button><button class="btn small ghost" type="button" data-a="close">Dismiss</button></div></div>`;
     el.addEventListener("click", e => {
       const a = e.target.closest("button")?.dataset.a; if (!a) return;
@@ -769,18 +666,46 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   const baseTitle = document.title;
   function updateTitle() { document.title = shown.size ? `(${shown.size}) ${baseTitle}` : baseTitle; }
 
+  // With a server, the server moves reminders along and sends notifications; the page only
+  // shows them (and only if this device isn't already getting real notifications).
+  const firedHere = new Set();
   function checkDue() {
+    if (pushOn) return;
     const now = Date.now(); let changed = false;
-    for (const t of Object.values(tasks)) if (!t.done && t.due && t.due <= now && t.remind && t.remind.mode !== "none") { fire(t); changed = true; }
+    for (const t of Object.values(tasks)) if (!t.done && t.due && t.due <= now && t.remind && t.remind.mode !== "none") {
+      if (server) { const k = t.id + ":" + t.due; if (!firedHere.has(k)) { firedHere.add(k); alertFor(t); } }
+      else { fire(t); changed = true; }
+    }
     if (changed) render();
+  }
+  async function onPushReminder(id) {
+    await load();
+    const t = tasks[id];
+    if (t && !t.done && !shown.has(id)) alertFor(t);
   }
 
   /* ---------- go ---------- */
+  if (pushSupported) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.addEventListener("message", e => { const d = e.data || {}; if (d.type === "reminder" && d.id) onPushReminder(d.id); });
+  }
+  const opened = new URLSearchParams(location.search).get("reminder");
+  if (opened) history.replaceState(null, "", location.pathname);
   render();
-  checkDue();
-  setInterval(() => { checkDue(); $("#clock").textContent = fmtTime(Date.now()); }, 15000);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) { checkDue(); render(); } });
+  (async () => {
+    await load();
+    await refreshPush();
+    if (opened) onPushReminder(opened);
+    checkDue();
+  })();
+  let lastLoad = Date.now();
+  setInterval(() => {
+    checkDue(); $("#clock").textContent = fmtTime(Date.now());
+    if (server && !document.hidden && Date.now() - lastLoad > 60e3) { lastLoad = Date.now(); load(); }
+  }, 15000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { lastLoad = Date.now(); load().then(checkDue); render(); } });
   setTimeout(() => say(Object.values(tasks).some(t => !t.done) ? "Here's what's on today." : "Hi! What's on the list today?"), 700);
-  connect();
 })();
 </script>
+</body>
+</html>
