@@ -54,9 +54,9 @@ button, input, select { font: inherit; color: inherit; }
 .stage { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 1206 / 892; }
 .stage .office { position: absolute; inset: 0; width: 100%; height: 100%; display: block; max-width: none; }
 .shade-l { position: absolute; border-radius: 50%; pointer-events: none; }
-.contact { left: 48.2%; top: 56.6%; width: 10.6%; height: 2.6%; background: rgba(34, 14, 4, .62); filter: blur(4px); }
-.cast { left: 51%; top: 45.6%; width: 9.8%; height: 11.8%; background: rgba(34, 14, 4, .2); filter: blur(9px); }
-.frosty { position: absolute; left: 47.68%; top: 40.58%; width: 11.28%; height: auto; max-width: none; transform-origin: 50% 100%; filter: drop-shadow(0 1px 1px rgba(40, 20, 8, .25)); }
+.contact { left: 48.4%; top: 57.9%; width: 9.9%; height: 2.2%; background: rgba(34, 14, 4, .62); filter: blur(4px); }
+.cast { left: 51.1%; top: 46.1%; width: 9%; height: 11.7%; background: rgba(34, 14, 4, .2); filter: blur(9px); }
+.frosty { position: absolute; left: 47.84%; top: 41.7%; width: 10.95%; height: auto; max-width: none; transform-origin: 50% 100%; filter: drop-shadow(0 1px 1px rgba(40, 20, 8, .25)); }
 .frosty.cheer { animation: hop .9s cubic-bezier(.3,.7,.4,1); }
 @keyframes hop { 0% { transform: translateY(0); } 30% { transform: translateY(-9%) rotate(-3deg); } 55% { transform: translateY(0) rotate(2deg); } 72% { transform: translateY(-3%); } 100% { transform: translateY(0); } }
 .vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(20, 14, 10, .35), transparent 22%), radial-gradient(120% 90% at 50% 45%, transparent 60%, rgba(20, 14, 10, .25)); }
@@ -67,7 +67,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 .caption b { color: #1F2B27; font-weight: 600; }
 .caption .dot { width: 7px; height: 7px; border-radius: 50%; background: #FFC867; box-shadow: 0 0 8px #FFC867; }
-.bubble-anchor { position: absolute; left: 53.3%; bottom: 60.5%; transform: translateX(-50%); width: max-content; max-width: 230px; }
+.bubble-anchor { position: absolute; left: 53.3%; bottom: 59.3%; transform: translateX(-50%); width: max-content; max-width: 230px; }
 .bubble {
   font-family: var(--f-body); font-size: 15px; line-height: 1.3; color: #22302B; background: #FFFDF8; position: relative;
   border: 1.5px solid #2E6F62; border-radius: 16px; padding: 8px 12px;
@@ -185,7 +185,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
       <img class="office" src="assets/office.jpg" alt="The office: a cognac leather couch under the window, a cream swivel chair, stacked ceramic lamp, moon plates and a patterned rug">
       <span class="shade-l cast" aria-hidden="true"></span>
       <span class="shade-l contact" aria-hidden="true"></span>
-      <img class="frosty" id="frosty" src="assets/frosty.webp" alt="Frosty the plush snowman, in his green hat and scarf, sitting on the couch">
+      <img class="frosty" id="frosty" src="assets/frosty.webp" alt="Frosty the plush snowman, in his green hat and scarf, sitting on the couch with his legs out in front">
       <div class="bubble-anchor"><div class="bubble" id="bubble" role="status" aria-live="polite"></div></div>
     </div>
     <div class="vignette" aria-hidden="true"></div>
