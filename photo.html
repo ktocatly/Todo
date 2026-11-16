@@ -202,7 +202,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     <form class="add" id="addForm" autocomplete="off">
       <div class="add-row">
         <label for="newText" class="sr" hidden>New to-do</label>
-        <input class="text-in" id="newText" maxlength="240" placeholder="What needs doing?" aria-label="New to-do">
+        <input class="text-in" id="newText" maxlength="240" placeholder="What needs doing?" aria-label="New to-do" enterkeyhint="done">
         <button class="btn" type="submit">Add</button>
       </div>
       <div id="newRemind"></div>
@@ -352,7 +352,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     const fresh = reminderControls("new", null); addCtl.replaceWith(fresh); addCtl = fresh;
     render();
     say(r.mode === "none" ? `Got it: <b>${esc(text)}</b>` : r.mode === "once" ? `I'll remind you ${esc(fmtWhen(r.at))}.` : `I'll remind you every day at ${esc(fmtHHMM(r.time))}.`);
-    $("#newText").focus();
+    if (matchMedia("(pointer: coarse)").matches) $("#newText").blur(); else $("#newText").focus();
   });
 
   /* ---------- rendering ---------- */
