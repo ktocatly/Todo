@@ -9,7 +9,7 @@ crons = ["* * * * *"]
 [[d1_databases]]
 binding = "DB"
 database_name = "karens-list"
-database_id = "REPLACE_WITH_DATABASE_ID"
+database_id = "10c5c6a1-9e44-4ad6-b21f-de280a527422"
 
 [vars]
 # Who push services should contact about these notifications (required by the Web Push standard).
