@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Karen's List</title>
+<title>To Do List</title>
 <meta name="description" content="Karen's to-do list, with reminders, and Frosty on the couch.">
 <meta name="theme-color" content="#E6E1D6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1D2220" media="(prefers-color-scheme: dark)">
@@ -131,10 +131,11 @@ h1 em { font-style: normal; color: var(--teal); }
 .btn.small { padding: 6px 11px; font-size: 13px; border-radius: 9px; }
 
 .remind { display: grid; gap: 10px; }
-.seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 2px; flex-wrap: wrap; width: fit-content; max-width: 100%; }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 2px; }
 .seg input { position: absolute; opacity: 0; pointer-events: none; }
-.seg label { padding: 6px 12px; border-radius: 8px; font-size: 13.5px; cursor: pointer; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
-.seg label svg { width: 14px; height: 14px; }
+.seg label { padding: 7px 8px; border-radius: 8px; font-size: 13.5px; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+.seg label svg { width: 14px; height: 14px; flex: none; }
+@media (max-width: 420px) { .seg label svg { display: none; } }
 .seg input:checked + label { background: var(--teal-soft); color: var(--ink); font-weight: 600; }
 .seg input:focus-visible + label { outline: 2px solid var(--teal); outline-offset: 1px; }
 .when { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
@@ -231,7 +232,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   <section class="panel" aria-labelledby="title">
     <header class="head">
       <div class="eyebrow" id="today"></div>
-      <h1 id="title">Karen's <em>List</em></h1>
+      <h1 id="title">To Do <em>List</em></h1>
       <p class="summary" id="summary"></p>
     </header>
 
