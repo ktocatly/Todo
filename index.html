@@ -251,15 +251,32 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
 /* ---------- Frosty's note: what he says, when the couch is scrolled out of view ---------- */
 .note {
   position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); z-index: 19; width: min(380px, calc(100vw - 32px));
-  display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px; align-items: center;
-  background: var(--panel); border: 1.5px solid var(--brass); border-radius: 16px; padding: 10px 14px 10px 10px;
+  display: block; min-height: 64px;
+  background: var(--panel); border: 1.5px solid var(--brass); border-radius: 16px; padding: 11px 14px 11px 80px;
   box-shadow: 0 18px 36px -16px var(--shadow); cursor: pointer;
   opacity: 0; visibility: hidden; transform: translate(-50%, 14px) scale(.97);
   transition: opacity .3s ease, transform .4s cubic-bezier(.3, 1.4, .5, 1), visibility 0s linear .4s;
 }
 .note.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
 .note { position: fixed; }
-.note img { width: 38px; height: auto; display: block; }
+/* Frosty stands in the card, peeking over its top edge: he hops for a check-off and sways for anything else. */
+.note-frosty { position: absolute; left: 14px; top: -16px; width: 54px; transform-origin: 50% 100%; }
+.note-frosty img { width: 54px; height: auto; display: block; filter: drop-shadow(0 2px 2px rgba(40, 20, 8, .22)); }
+.note-shadow { position: absolute; left: 18px; top: 50px; width: 48px; height: 7px; border-radius: 50%; background: rgba(30, 12, 4, .2); filter: blur(2px); transform-origin: 50% 50%; }
+.note.hop .note-frosty { animation: noteHop 1s cubic-bezier(.3, .7, .4, 1) .15s both; }
+.note.hop .note-shadow { animation: noteShadow 1s cubic-bezier(.3, .7, .4, 1) .15s both; }
+.note.sway .note-frosty { animation: noteSway 1.8s ease-in-out .15s both; }
+@keyframes noteHop {
+  0% { transform: none; }
+  12% { transform: scale(1.06, .9); }
+  32% { transform: translateY(-22px) rotate(-5deg); }
+  52% { transform: translateY(0) scale(1.08, .88); }
+  64% { transform: translateY(-7px) rotate(3deg); }
+  78% { transform: translateY(0) scale(1.03, .96); }
+  100% { transform: none; }
+}
+@keyframes noteShadow { 32% { transform: scale(.55); opacity: .5; } 52%, 100% { transform: none; opacity: 1; } 64% { transform: scale(.8); } }
+@keyframes noteSway { 20% { transform: rotate(-6deg); } 45% { transform: rotate(5deg); } 70% { transform: rotate(-2deg); } 100% { transform: none; } }
 .note .who { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
 .note p { margin: 1px 0 0; font-size: 14.5px; line-height: 1.38; overflow-wrap: anywhere; }
 
@@ -290,7 +307,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   .bubble { font-size: 14.5px; padding: 7px 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .frosty.cheer, .toast, .task.enter, .task.completing .check, .task.completing .check::after, .spark { animation: none !important; }
+  .note .note-frosty, .note .note-shadow, .frosty.cheer, .toast, .task.enter, .task.completing .check, .task.completing .check::after, .spark { animation: none !important; }
   .bubble, .note, .btn, .seg::before, .check, .check svg path, .t-text, .t-text .tt, .task.leaving { transition: none !important; }
 }
 .server-form { display: grid; gap: 8px; width: 100%; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel-2); }
@@ -337,7 +354,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   </section>
 </main>
 <div class="toasts" id="toasts" aria-live="assertive"></div>
-<div class="note" id="note" role="status" aria-live="polite"><img src="assets/frosty.webp" alt=""><div><div class="who">Frosty</div><p id="noteText"></p></div></div>
+<div class="note" id="note" role="status" aria-live="polite"><span class="note-shadow" aria-hidden="true"></span><span class="note-frosty" aria-hidden="true"><img src="assets/frosty.webp" alt=""></span><div><div class="who">Frosty</div><p id="noteText"></p></div></div>
 
 <script>
 (() => {
@@ -677,7 +694,8 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   bubble.addEventListener("click", () => bubble.classList.remove("show"));
   addEventListener("keydown", e => { if (e.key === "Escape") { bubble.classList.remove("show"); note.classList.remove("show"); } });
   // ms = 0 keeps the message up until it's tapped (used for greetings).
-  function say(html, ms = 3200) {
+  // move: "hop" for a check-off, anything else sways (only seen in the card at the bottom).
+  function say(html, ms = 3200, move = "sway") {
     const sticky = !ms;
     const close = sticky ? `<button class="x" type="button" aria-label="Close">×</button>` : "";
     // If the photo of the couch is scrolled away (usual on a phone), Frosty speaks from a card at the bottom.
@@ -685,7 +703,8 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     if (r.bottom < 120 || r.top > innerHeight - 120) {
       $("#noteText").innerHTML = html; note.querySelector(".x")?.remove();
       if (sticky) note.insertAdjacentHTML("beforeend", close);
-      note.classList.toggle("sticky", sticky); note.classList.add("show");
+      note.classList.toggle("sticky", sticky);
+      note.classList.remove("hop", "sway"); void note.offsetWidth; note.classList.add("show", move === "hop" ? "hop" : "sway");
       clearTimeout(noteTimer); if (!sticky) noteTimer = setTimeout(() => note.classList.remove("show"), ms);
       return;
     }
@@ -839,7 +858,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
       } else n.due = null;
       n.snoozed = false; dismissToast(id); cheer();
       const othersOpen = Object.values(tasks).some(x => x.id !== id && !x.done);
-      say(othersOpen ? esc(nextWisdom()) : esc(allDoneLines[Math.floor(Math.random() * allDoneLines.length)]), 6500);
+      say(othersOpen ? esc(nextWisdom()) : esc(allDoneLines[Math.floor(Math.random() * allDoneLines.length)]), 6500, "hop");
     }
     else { n.openedByFire = false; n.due = n.remind && n.remind.mode !== "none" ? (n.remind.mode === "once" ? (n.remind.at > Date.now() ? n.remind.at : null) : dueFor(n.remind)) : null; }
     persist(n);
