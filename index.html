@@ -23,7 +23,7 @@
 :root {
   --table: #E6E1D6; --dot: #D3CBBB; --brass: #B08D3E; --brass-soft: #D9C38E;
   --panel: #FBFAF6; --panel-2: #F2EFE7; --ink: #1F2B27; --muted: #69736E; --line: #E2DDD2;
-  --teal: #2E6F62; --teal-ink: #FFFFFF; --teal-soft: #DDEBE6; --cognac: #A55B2C; --amber: #A86A12; --amber-soft: #F6E8CF; --danger: #A63D2F;
+  --teal: #2E6F62; --teal-deep: #1C4A41; --teal-ink: #FFFFFF; --teal-soft: #DDEBE6; --cognac: #A55B2C; --amber: #A86A12; --amber-soft: #F6E8CF; --danger: #A63D2F;
   --shadow: rgba(48, 38, 22, .28);
   --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --f-body: "Instrument Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
@@ -31,14 +31,14 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --table: #1D2220; --dot: #2B322E; --brass: #C7A256; --brass-soft: #6E5A2E;
   --panel: #171C1A; --panel-2: #202624; --ink: #EDE8DD; --muted: #9CA59F; --line: #2D3431;
-  --teal: #74C2B1; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
+  --teal: #74C2B1; --teal-deep: #3F8577; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
   --shadow: rgba(0, 0, 0, .55);
   color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --table: #1D2220; --dot: #2B322E; --brass: #C7A256; --brass-soft: #6E5A2E;
   --panel: #171C1A; --panel-2: #202624; --ink: #EDE8DD; --muted: #9CA59F; --line: #2D3431;
-  --teal: #74C2B1; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
+  --teal: #74C2B1; --teal-deep: #3F8577; --teal-ink: #0F1A17; --teal-soft: #1F3833; --cognac: #D08A55; --amber: #E2A84A; --amber-soft: #3A2F1C; --danger: #E2836F;
   --shadow: rgba(0, 0, 0, .55);
   color-scheme: dark;
 }
@@ -121,13 +121,20 @@ h1 em { font-style: normal; color: var(--teal); }
   flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--panel); border-radius: 11px; padding: 10px 12px; font-size: 15px;
 }
 .text-in::placeholder { color: var(--muted); }
+/* Buttons sit on a darker edge, like a key: they rise a hair on hover and press down to it. */
 .btn {
+  --edge: var(--teal-deep);
   border: 0; border-radius: 11px; padding: 10px 16px; font-weight: 600; cursor: pointer; background: var(--teal); color: var(--teal-ink); white-space: nowrap;
-  transition: transform .1s ease, filter .15s ease;
+  box-shadow: 0 3px 0 var(--edge), inset 0 1px 0 rgba(255, 255, 255, .22);
+  transition: transform .18s cubic-bezier(.3, 1.6, .5, 1), box-shadow .18s cubic-bezier(.3, 1.6, .5, 1), filter .15s ease;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
 }
-.btn:hover { filter: brightness(1.06); } .btn:active { transform: translateY(1px); }
-.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-.btn.danger { background: transparent; color: var(--danger); border: 1px solid var(--line); }
+@media (hover: hover) { .btn:hover:not(:active) { filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 4px 0 var(--edge), inset 0 1px 0 rgba(255, 255, 255, .22); } }
+.btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--edge), inset 0 1px 0 rgba(255, 255, 255, .12); transition-duration: .05s; }
+.btn:disabled { opacity: .6; cursor: default; transform: none; }
+.btn.ghost, .btn.danger { --edge: var(--line); background: var(--panel); border: 1px solid var(--line); box-shadow: 0 2px 0 var(--edge); }
+.btn.ghost { color: var(--ink); } .btn.danger { color: var(--danger); }
+.btn.ghost:active, .btn.danger:active { transform: translateY(2px); box-shadow: 0 0 0 var(--edge); }
 .btn.small { padding: 6px 11px; font-size: 13px; border-radius: 9px; }
 
 .remind { display: grid; gap: 10px; }
@@ -137,6 +144,21 @@ h1 em { font-style: normal; color: var(--teal); }
 .seg label svg { width: 14px; height: 14px; flex: none; }
 @media (max-width: 420px) { .seg label svg { display: none; } }
 .seg input:checked + label { background: var(--teal-soft); color: var(--ink); font-weight: 600; }
+.seg label { transition: color .2s ease, transform .15s ease; -webkit-tap-highlight-color: transparent; }
+.seg label:active { transform: scale(.95); }
+/* Where the browser can tell which option is chosen, one highlight slides between them. */
+@supports selector(:has(a)) {
+  .seg { position: relative; }
+  .seg::before {
+    content: ""; position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 10px) / 3); border-radius: 8px;
+    background: var(--teal-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--teal) 18%, transparent);
+    transition: transform .38s cubic-bezier(.3, 1.35, .5, 1);
+  }
+  .seg:has(input[value="once"]:checked)::before { transform: translateX(calc(100% + 2px)); }
+  .seg:has(input[value="daily"]:checked)::before { transform: translateX(calc(200% + 4px)); }
+  .seg label { position: relative; z-index: 1; }
+  .seg input:checked + label { background: transparent; }
+}
 .seg input:focus-visible + label { outline: 2px solid var(--teal); outline-offset: 1px; }
 .when { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
 .when input { border: 1px solid var(--line); background: var(--panel); border-radius: 9px; padding: 6px 9px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -152,16 +174,49 @@ h1 em { font-style: normal; color: var(--teal); }
 ul.tasks { list-style: none; margin: 0; padding: 0; }
 .task { border-bottom: 1px solid var(--line); }
 .task-main { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; }
+.task.enter { animation: enter .45s cubic-bezier(.3, 1.3, .5, 1); }
+@keyframes enter { from { opacity: 0; transform: translateY(-8px) scale(.98); } }
+
+/* The check: the circle fills with a pop, the tick draws itself, a ring and a few sparks go out. */
 .check {
-  width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; border: 1.8px solid var(--teal); background: transparent; cursor: pointer; padding: 0;
-  display: grid; place-items: center; transition: background .15s ease;
+  position: relative; width: 26px; height: 26px; margin-top: -1px; border-radius: 50%; border: 2px solid var(--teal); background: transparent; cursor: pointer; padding: 0;
+  display: grid; place-items: center; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  transition: background .2s ease, box-shadow .2s ease, transform .3s cubic-bezier(.3, 1.6, .5, 1);
 }
-.check svg { width: 13px; height: 13px; opacity: 0; transition: opacity .15s; }
-.check:hover svg { opacity: .35; }
-.task.done .check { background: var(--teal); }
-.task.done .check svg { opacity: 1; color: var(--teal-ink); }
-.t-text { overflow-wrap: anywhere; font-size: 15px; }
-.task.done .t-text { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--muted) 60%, transparent); }
+@media (hover: hover) { .check:hover { box-shadow: 0 0 0 4px var(--teal-soft); } }
+.check:active { transform: scale(.86); transition-duration: .08s; }
+.check svg { width: 14px; height: 14px; color: var(--teal); opacity: 0; transition: opacity .2s ease; }
+.check svg path { stroke-dasharray: 15; stroke-dashoffset: 15; transition: stroke-dashoffset .3s cubic-bezier(.6, 0, .3, 1) .06s; }
+@media (hover: hover) {
+  .task:not(.done):not(.completing) .check:hover svg { opacity: .45; }
+  .task:not(.done):not(.completing) .check:hover svg path { stroke-dashoffset: 0; }
+}
+.task.done .check, .task.completing .check { background: var(--teal); }
+.task.done .check svg, .task.completing .check svg { opacity: 1; color: var(--teal-ink); }
+.task.done .check svg path, .task.completing .check svg path { stroke-dashoffset: 0; }
+.task.completing .check { animation: pop .5s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop { 0% { transform: scale(.78); } 45% { transform: scale(1.2); } 100% { transform: scale(1); } }
+.check::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
+.task.completing .check::after { animation: ring .6s ease-out; }
+@keyframes ring { from { opacity: .55; transform: scale(1); } to { opacity: 0; transform: scale(2.2); } }
+.spark {
+  position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--c); pointer-events: none;
+  animation: spark .62s cubic-bezier(.2, .7, .3, 1) forwards;
+}
+@keyframes spark {
+  from { opacity: 1; transform: rotate(var(--a)) translateY(-10px) scale(1); }
+  to { opacity: 0; transform: rotate(var(--a)) translateY(-26px) scale(.3); }
+}
+.t-text { overflow-wrap: anywhere; font-size: 15px; transition: color .3s ease .12s; }
+/* The strike is drawn left to right instead of appearing all at once. */
+.t-text .tt {
+  background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 58%; background-size: 0% 1.5px;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  transition: background-size .4s cubic-bezier(.6, 0, .3, 1) .14s;
+}
+.task.done .t-text, .task.completing .t-text { color: var(--muted); }
+.task.done .t-text .tt, .task.completing .t-text .tt { background-size: 100% 1.5px; }
+.task.leaving { overflow: hidden; transition: height .3s cubic-bezier(.5, 0, .3, 1), opacity .25s ease, border-color .3s ease; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
 .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; padding: 2px 9px 2px 7px; border-radius: 999px; background: var(--teal-soft); color: var(--ink); font-variant-numeric: tabular-nums; }
 .chip svg { width: 12px; height: 12px; color: var(--teal); }
@@ -204,8 +259,8 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   h1 { font-size: 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .frosty.cheer, .toast { animation: none !important; }
-  .bubble { transition: none; }
+  .frosty.cheer, .toast, .task.enter, .task.completing .check, .task.completing .check::after, .spark { animation: none !important; }
+  .bubble, .btn, .seg::before, .check, .check svg path, .t-text, .t-text .tt, .task.leaving { transition: none !important; }
 }
 .server-form { display: grid; gap: 8px; width: 100%; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel-2); }
 .server-form label { font-size: 12.5px; color: var(--muted); font-weight: 600; }
@@ -413,7 +468,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     if (r.error) { err.textContent = r.error; err.hidden = false; return; }
     err.hidden = true;
     const t = { id: newId(), text, done: false, createdAt: Date.now(), remind: r, due: dueFor(r), snoozed: false };
-    persist(t);
+    persist(t); justAdded = t.id;
     $("#newText").value = "";
     const fresh = reminderControls("new", null); addCtl.replaceWith(fresh); addCtl = fresh;
     render();
@@ -423,7 +478,8 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
 
   /* ---------- rendering ---------- */
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  let editing = null, showDone = true;
+  let editing = null, showDone = true, justAdded = null, holdRender = 0, renderWaiting = false;
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function chipsFor(t) {
     const c = [];
@@ -440,11 +496,11 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   }
 
   function taskEl(t) {
-    const li = document.createElement("li"); li.className = "task" + (t.done ? " done" : ""); li.dataset.id = t.id;
+    const li = document.createElement("li"); li.className = "task" + (t.done ? " done" : "") + (t.id === justAdded ? " enter" : ""); li.dataset.id = t.id;
     li.innerHTML = `
       <div class="task-main">
         <button class="check" type="button" aria-pressed="${t.done}" aria-label="${t.done ? "Mark as not done" : "Check off"}: ${esc(t.text)}">${ICON.check}</button>
-        <div style="min-width:0"><div class="t-text">${esc(t.text)}</div><div class="chips">${chipsFor(t)}</div></div>
+        <div style="min-width:0"><div class="t-text"><span class="tt">${esc(t.text)}</span></div><div class="chips">${chipsFor(t)}</div></div>
         <button class="icon-btn" type="button" aria-label="Edit ${esc(t.text)}" aria-expanded="${editing === t.id}">${ICON.edit}</button>
       </div>`;
     $(".check", li).addEventListener("click", () => toggle(t.id));
@@ -481,6 +537,8 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   }
 
   function render() {
+    if (holdRender) { renderWaiting = true; return; }     // let a check-off finish its little show first
+    renderWaiting = false;
     const all = Object.values(tasks);
     const open = all.filter(t => !t.done).sort((a, b) => a.createdAt - b.createdAt);
     const done = all.filter(t => t.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
@@ -523,6 +581,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     }
     L.appendChild(note);
     renderAlerts();
+    justAdded = null;
   }
 
   /* ---------- Frosty ---------- */
@@ -539,7 +598,28 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     const n = { ...t, done: !t.done, doneAt: t.done ? null : Date.now() };
     if (n.done) { n.due = null; n.snoozed = false; dismissToast(id); cheer(); say(cheers[Math.floor(Math.random() * cheers.length)]); }
     else { n.due = n.remind && n.remind.mode !== "none" ? (n.remind.mode === "once" ? (n.remind.at > Date.now() ? n.remind.at : null) : nextDaily(n.remind.time)) : null; }
-    persist(n); render();
+    persist(n);
+    const li = document.querySelector(`li.task[data-id="${CSS.escape(id)}"]`);
+    if (n.done) { tick(); try { navigator.vibrate && navigator.vibrate(12); } catch {} }
+    if (!n.done || !li || reduceMotion) { render(); return; }
+    celebrate(li);
+  }
+  // Fill and tick the circle, send out sparks, draw the strike, then fold the row away.
+  function celebrate(li) {
+    holdRender++;
+    li.classList.add("completing");
+    const btn = $(".check", li);
+    const colors = ["var(--teal)", "var(--cognac)", "var(--brass)"];
+    for (let i = 0; i < 8; i++) {
+      const s = document.createElement("span"); s.className = "spark";
+      s.style.setProperty("--a", (i * 45 + (i % 2 ? 12 : -8)) + "deg"); s.style.setProperty("--c", colors[i % 3]);
+      btn.appendChild(s); setTimeout(() => s.remove(), 700);
+    }
+    setTimeout(() => {
+      li.style.height = li.offsetHeight + "px"; li.classList.add("leaving");
+      requestAnimationFrame(() => { li.style.height = "0px"; li.style.opacity = "0"; li.style.borderBottomColor = "transparent"; });
+      setTimeout(() => { holdRender = Math.max(0, holdRender - 1); if (!holdRender) render(); }, 320);
+    }, 720);
   }
 
   /* ---------- reminders ---------- */
@@ -554,6 +634,15 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
         o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0, t0 + d); g.gain.linearRampToValueAtTime(.12, t0 + d + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + d + 1.4);
         o.connect(g).connect(audio.destination); o.start(t0 + d); o.stop(t0 + d + 1.5);
       });
+    } catch {}
+  }
+  function tick() {
+    if (!audio) return;
+    try {
+      const t0 = audio.currentTime, o = audio.createOscillator(), g = audio.createGain();
+      o.type = "triangle"; o.frequency.setValueAtTime(660, t0); o.frequency.exponentialRampToValueAtTime(1320, t0 + .08);
+      g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(.07, t0 + .01); g.gain.exponentialRampToValueAtTime(.0001, t0 + .2);
+      o.connect(g).connect(audio.destination); o.start(t0); o.stop(t0 + .22);
     } catch {}
   }
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
