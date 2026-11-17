@@ -2,6 +2,15 @@
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
 
+// Always ask GitHub Pages whether a file changed before using a saved copy, so updates show up
+// the next time the app is opened instead of up to 10 minutes later. Unchanged files still load
+// from the saved copy, and the saved copy is used if there's no connection.
+self.addEventListener("fetch", event => {
+  const req = event.request;
+  if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
+  event.respondWith(fetch(req, { cache: "no-cache" }).catch(() => fetch(req)));
+});
+
 self.addEventListener("push", event => {
   let d = {};
   try { d = event.data ? event.data.json() : {}; } catch { d = { body: event.data && event.data.text() }; }
