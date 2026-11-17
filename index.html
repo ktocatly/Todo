@@ -271,6 +271,8 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   .lists { overflow: visible; }
   .head { padding: 22px 18px 0; } .add { margin: 16px 18px 0; } .alerts { margin: 10px 18px 0; } .lists { padding: 10px 18px 22px; }
   h1 { font-size: 32px; }
+  .bubble-anchor { max-width: min(290px, 82vw); }
+  .bubble { font-size: 14.5px; padding: 7px 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .frosty.cheer, .toast, .task.enter, .task.completing .check, .task.completing .check::after, .spark { animation: none !important; }
@@ -340,7 +342,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     const cw = scene.clientWidth, ch = scene.clientHeight; if (!cw || !ch) return;
     const zoom = cw < 600 ? 1.85 : 1.12;
     const W = Math.max(cw, ch * RATIO) * zoom, H = W / RATIO;
-    const L = Math.min(0, Math.max(cw - W, cw / 2 - .485 * W)), T = Math.min(0, Math.max(ch - H, ch * .56 - .5 * H));
+    const L = Math.min(0, Math.max(cw - W, cw / 2 - .485 * W)), T = Math.min(0, Math.max(ch - H, ch * (cw < 600 ? .63 : .56) - .5 * H));
     Object.assign(stage.style, { width: W + "px", height: H + "px", left: L + "px", top: T + "px" });
   }
   layout();
@@ -953,7 +955,68 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     if (server && !document.hidden && Date.now() - lastLoad > 60e3) { lastLoad = Date.now(); load(); }
   }, 15000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { lastLoad = Date.now(); load().then(checkDue); render(); } });
-  setTimeout(() => say(Object.values(tasks).some(t => !t.done) ? "Here's what's on today." : "Hi! What's on the list today?"), 700);
+  // Frosty's greeting: a calm thought about life, from a psychoanalytic angle. Shown when the app opens,
+  // and again when you come back after 15 minutes or more away.
+  const greetings = [
+    "Whatever you're carrying today, you don't have to carry it perfectly.",
+    "A day doesn't need to be extraordinary to be a good-enough one.",
+    "You're allowed to go gently today. Kindness reaches further than force.",
+    "Today doesn't need to prove anything. It only needs living.",
+    "Be curious about yourself today, the way you would be about a friend.",
+    "What you notice in yourself today is information, not a verdict.",
+    "Being understood is a basic need. Try understanding yourself a little today.",
+    "Your inner world deserves the same care you give your outer one.",
+    "Most of what we feel makes sense once we know its history.",
+    "The past lives in us, but it doesn't have to be in charge.",
+    "Things that keep repeating in our lives are often asking to be understood.",
+    "What we can't remember, we tend to repeat. What we understand, we can choose.",
+    "You don't have to resolve your whole past to live well today.",
+    "Feelings that get named lose some of their grip.",
+    "Some feelings arrive before words. Give them time to find theirs.",
+    "You can hold a hard feeling without being swallowed by it.",
+    "Staying with a feeling, without rushing to fix it, is its own kind of strength.",
+    "Dreams, slips and moods are the mind speaking sideways. Listen kindly.",
+    "Some days the work is simply staying in touch with yourself.",
+    "Nobody is only one thing. There's room for all of you today.",
+    "Good and bad can live in the same day, and the same person. Both are real.",
+    "Ambivalence isn't a problem to solve. It's what caring looks like up close.",
+    "Even the parts of you that frustrate you are trying to protect something.",
+    "Envy and admiration are close cousins. Both point to what you value.",
+    "We're made of our relationships, and new ones keep shaping us. That's hopeful.",
+    "No one becomes themselves alone. Let someone matter to you today.",
+    "The capacity to be quietly alone is one of the mind's real achievements.",
+    "Wanting things isn't a flaw. Desire is part of being alive.",
+    "Small pleasures count. They're how a life gets lived, not a reward for it.",
+    "Play is how grown-ups keep a mind alive. Leave a little room for it.",
+    "Disappointment is survivable, and each one lived through makes you a little sturdier.",
+    "Mourning what wasn't is what lets us enjoy what is.",
+    "Grief and growth often travel together.",
+    "Hope isn't certainty. It's a willingness to keep relating to life.",
+    "We all build defenses. Wisdom is noticing when they're no longer needed.",
+    "A self is built over a lifetime. You're still allowed to change.",
+    "We grow less by fixing ourselves than by understanding ourselves.",
+    "The mind keeps working on things while you rest. You can trust that.",
+    "Gentleness toward yourself isn't indulgence. It's how minds grow.",
+    "You are more than your moods, your schedule, or your to-do list.",
+  ];
+  function nextGreeting() {
+    let bag = []; try { bag = JSON.parse(localStorage.getItem("frosty-greeting-bag") || "[]"); } catch {}
+    bag = bag.filter(i => i < greetings.length);
+    if (!bag.length) { bag = greetings.map((_, i) => i); for (let i = bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [bag[i], bag[j]] = [bag[j], bag[i]]; } }
+    const i = bag.pop(); try { localStorage.setItem("frosty-greeting-bag", JSON.stringify(bag)); } catch {}
+    return greetings[i];
+  }
+  function greet() {
+    const h = new Date().getHours();
+    const hello = h >= 5 && h < 12 ? "Good morning, Karen." : h >= 12 && h < 17 ? "Good afternoon, Karen." : h >= 17 && h < 22 ? "Good evening, Karen." : "Hello, Karen.";
+    say(`<b>${hello}</b> ${esc(nextGreeting())}`, 8000);
+  }
+  setTimeout(greet, 700);
+  let hiddenAt = 0;
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { hiddenAt = Date.now(); return; }
+    if (hiddenAt && Date.now() - hiddenAt >= 15 * 60e3) setTimeout(greet, 400);
+  });
 })();
 </script>
 </body>
