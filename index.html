@@ -105,6 +105,16 @@ button, input, select { font: inherit; color: inherit; }
 .bubble::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; background: #FFFDF8; border-right: 1.5px solid #2E6F62; border-bottom: 1.5px solid #2E6F62; transform: translateX(-50%) rotate(45deg); }
 .bubble.show { opacity: 1; transform: none; }
 .bubble b { font-weight: 600; }
+.bubble { pointer-events: none; cursor: pointer; }
+.bubble.show { pointer-events: auto; }
+/* A greeting stays until it's tapped; the small x says so. */
+.bubble.sticky, .note.sticky { padding-right: 32px; }
+.bubble .x, .note .x {
+  position: absolute; top: 5px; right: 6px; width: 24px; height: 24px; border: 0; border-radius: 50%; padding: 0;
+  background: transparent; color: #6B746F; font: 500 18px/24px var(--f-body); cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.bubble .x:hover, .note .x:hover { background: rgba(46, 111, 98, .1); }
+.note .x { color: var(--muted); }
 
 /* ---------- list panel ---------- */
 .panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
@@ -244,6 +254,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   transition: opacity .3s ease, transform .4s cubic-bezier(.3, 1.4, .5, 1), visibility 0s linear .4s;
 }
 .note.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+.note { position: fixed; }
 .note img { width: 38px; height: auto; display: block; }
 .note .who { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
 .note p { margin: 1px 0 0; font-size: 14.5px; line-height: 1.38; overflow-wrap: anywhere; }
@@ -604,17 +615,25 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   /* ---------- Frosty ---------- */
   let bubbleTimer, noteTimer;
   const note = $("#note");
+  const bubble = $("#bubble");
   note.addEventListener("click", () => note.classList.remove("show"));
+  bubble.addEventListener("click", () => bubble.classList.remove("show"));
+  addEventListener("keydown", e => { if (e.key === "Escape") { bubble.classList.remove("show"); note.classList.remove("show"); } });
+  // ms = 0 keeps the message up until it's tapped (used for greetings).
   function say(html, ms = 3200) {
+    const sticky = !ms;
+    const close = sticky ? `<button class="x" type="button" aria-label="Close">×</button>` : "";
     // If the photo of the couch is scrolled away (usual on a phone), Frosty speaks from a card at the bottom.
     const r = $("#scene").getBoundingClientRect();
     if (r.bottom < 120 || r.top > innerHeight - 120) {
-      $("#noteText").innerHTML = html; note.classList.add("show");
-      clearTimeout(noteTimer); noteTimer = setTimeout(() => note.classList.remove("show"), ms);
+      $("#noteText").innerHTML = html; note.querySelector(".x")?.remove();
+      if (sticky) note.insertAdjacentHTML("beforeend", close);
+      note.classList.toggle("sticky", sticky); note.classList.add("show");
+      clearTimeout(noteTimer); if (!sticky) noteTimer = setTimeout(() => note.classList.remove("show"), ms);
       return;
     }
-    const b = $("#bubble"); b.innerHTML = html; b.classList.add("show");
-    clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => b.classList.remove("show"), ms);
+    bubble.innerHTML = html + close; bubble.classList.toggle("sticky", sticky); bubble.classList.add("show");
+    clearTimeout(bubbleTimer); if (!sticky) bubbleTimer = setTimeout(() => bubble.classList.remove("show"), ms);
   }
   function cheer() { const f = $("#frosty"); f.classList.remove("cheer"); void f.offsetWidth; f.classList.add("cheer"); }
   // 100 short, original lines in Frosty's voice, each resting on a psychodynamic or psychoanalytic idea
@@ -1009,7 +1028,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   function greet() {
     const h = new Date().getHours();
     const hello = h >= 5 && h < 12 ? "Good morning, Karen." : h >= 12 && h < 17 ? "Good afternoon, Karen." : h >= 17 && h < 22 ? "Good evening, Karen." : "Hello, Karen.";
-    say(`<b>${hello}</b> ${esc(nextGreeting())}`, 8000);
+    say(`<b>${hello}</b> ${esc(nextGreeting())}`, 0);
   }
   setTimeout(greet, 700);
   let hiddenAt = 0;
