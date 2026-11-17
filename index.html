@@ -148,7 +148,7 @@ h1 em { font-style: normal; color: var(--teal); }
 .btn.small { padding: 6px 11px; font-size: 13px; border-radius: 9px; }
 
 .remind { display: grid; gap: 10px; }
-.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 2px; }
+.seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 2px; }
 .seg input { position: absolute; opacity: 0; pointer-events: none; }
 .seg label { padding: 7px 8px; border-radius: 8px; font-size: 13.5px; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
 .seg label svg { width: 14px; height: 14px; flex: none; }
@@ -160,17 +160,21 @@ h1 em { font-style: normal; color: var(--teal); }
 @supports selector(:has(a)) {
   .seg { position: relative; }
   .seg::before {
-    content: ""; position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 10px) / 3); border-radius: 8px;
+    content: ""; position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 12px) / 4); border-radius: 8px;
     background: var(--teal-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--teal) 18%, transparent);
     transition: transform .38s cubic-bezier(.3, 1.35, .5, 1);
   }
   .seg:has(input[value="once"]:checked)::before { transform: translateX(calc(100% + 2px)); }
   .seg:has(input[value="daily"]:checked)::before { transform: translateX(calc(200% + 4px)); }
+  .seg:has(input[value="repeat"]:checked)::before { transform: translateX(calc(300% + 6px)); }
   .seg label { position: relative; z-index: 1; }
   .seg input:checked + label { background: transparent; }
 }
 .seg input:focus-visible + label { outline: 2px solid var(--teal); outline-offset: 1px; }
 .when { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.when select { border: 1px solid var(--line); background: var(--panel); border-radius: 9px; padding: 6px 8px; font-size: 14px; color: var(--ink); }
+.when .hint { flex-basis: 100%; font-size: 12.5px; }
+.when > span[hidden] { display: none !important; }
 .when input { border: 1px solid var(--line); background: var(--panel); border-radius: 9px; padding: 6px 9px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
 .err { color: var(--danger); font-size: 13px; }
 
@@ -371,6 +375,28 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   }
   function fmtHHMM(hhmm) { const [h, m] = hhmm.split(":").map(Number); const d = new Date(); d.setHours(h, m, 0, 0); return fmtTime(d); }
   function nextDaily(hhmm, after = Date.now()) { const [h, m] = hhmm.split(":").map(Number); const d = new Date(after); d.setHours(h, m, 0, 0); if (d.getTime() <= after) d.setDate(d.getDate() + 1); return d.getTime(); }
+  // Next time a repeating reminder is due, strictly after `after`, in this device's local time.
+  // Monthly reminders on the 29th-31st fall on the last day of shorter months.
+  function nextRepeat(r, after = Date.now()) {
+    const [h, m] = r.time.split(":").map(Number), base = new Date(after);
+    if (r.every === "week") {
+      for (let k = 0; k <= 7; k++) { const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + k, h, m); if (d.getDay() === Number(r.weekday) && d.getTime() > after) return d.getTime(); }
+    } else if (r.every === "month") {
+      for (let k = 0; k <= 13; k++) {
+        const y = base.getFullYear(), mo = base.getMonth() + k, last = new Date(y, mo + 1, 0).getDate();
+        const d = new Date(y, mo, Math.min(Number(r.monthday), last), h, m); if (d.getTime() > after) return d.getTime();
+      }
+    } else return nextDaily(r.time, after);
+    return after + 864e5;
+  }
+  const isRepeat = t => !!(t && t.remind && t.remind.mode === "repeat");
+  const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const ordinal = n => n + (n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th");
+  function repeatLabel(r) {
+    if (r.every === "week") return `Every ${WEEKDAYS[r.weekday]} · ${fmtHHMM(r.time)}`;
+    if (r.every === "month") return `Monthly on the ${ordinal(Number(r.monthday))} · ${fmtHHMM(r.time)}`;
+    return `Every day · ${fmtHHMM(r.time)}`;
+  }
   const pad = n => String(n).padStart(2, "0");
   const toDateInput = ms => { const d = new Date(ms); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
   const toTimeInput = ms => { const d = new Date(ms); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
@@ -452,9 +478,11 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     const wrap = document.createElement("div"); wrap.className = "remind";
     const onceMs = r && r.mode === "once" ? r.at : nextHour();
     const dailyT = r && r.mode === "daily" ? r.time : "09:00";
+    const today = new Date();
+    const rep = r && r.mode === "repeat" ? r : { every: "day", time: "09:00", weekday: today.getDay(), monthday: today.getDate() };
     wrap.innerHTML = `
       <div class="seg" role="radiogroup" aria-label="Reminder">
-        ${[["none", "No reminder", "none"], ["once", "Once", "bell"], ["daily", "Every day", "repeat"]].map(([v, l, ic]) =>
+        ${[["none", "None", "none"], ["once", "Once", "bell"], ["daily", "Until done", "snooze"], ["repeat", "Repeat", "repeat"]].map(([v, l, ic]) =>
           `<input type="radio" name="${key}-mode" id="${key}-${v}" value="${v}" ${v === mode ? "checked" : ""}><label for="${key}-${v}">${ICON[ic]}${l}</label>`).join("")}
       </div>
       <div class="when" data-for="once" ${mode === "once" ? "" : "hidden"}>
@@ -464,9 +492,22 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
       <div class="when" data-for="daily" ${mode === "daily" ? "" : "hidden"}>
         <span>Remind me every day at</span><input type="time" id="${key}-dtime" value="${dailyT}" aria-label="Daily reminder time">
         <span>until it's checked off</span>
+      </div>
+      <div class="when" data-for="repeat" ${mode === "repeat" ? "" : "hidden"}>
+        <span>Every</span>
+        <select id="${key}-every" aria-label="How often">
+          ${[["day", "day"], ["week", "week"], ["month", "month"]].map(([v, l]) => `<option value="${v}" ${rep.every === v ? "selected" : ""}>${l}</option>`).join("")}
+        </select>
+        <span class="rep-week" ${rep.every === "week" ? "" : "hidden"}>on <select id="${key}-weekday" aria-label="Day of the week">
+          ${WEEKDAYS.map((d, i) => `<option value="${i}" ${Number(rep.weekday) === i ? "selected" : ""}>${d}</option>`).join("")}</select></span>
+        <span class="rep-month" ${rep.every === "month" ? "" : "hidden"}>on the <select id="${key}-monthday" aria-label="Day of the month">
+          ${Array.from({ length: 31 }, (_, i) => i + 1).map(d => `<option value="${d}" ${Number(rep.monthday) === d ? "selected" : ""}>${ordinal(d)}</option>`).join("")}</select></span>
+        <span>at</span><input type="time" id="${key}-rtime" value="${rep.time}" aria-label="Repeat time">
+        <span class="hint">It comes back each time, even after you check it off.</span>
       </div>`;
     wrap.addEventListener("change", e => {
       if (e.target.name === key + "-mode") wrap.querySelectorAll(".when").forEach(w => w.hidden = w.dataset.for !== e.target.value);
+      if (e.target.id === key + "-every") { $(".rep-week", wrap).hidden = e.target.value !== "week"; $(".rep-month", wrap).hidden = e.target.value !== "month"; }
     });
     wrap.read = () => {
       const m = wrap.querySelector(`input[name="${key}-mode"]:checked`).value;
@@ -479,11 +520,19 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
         return { mode: "once", at };
       }
       if (m === "daily") { const tv = $(`#${key}-dtime`, wrap).value; if (!tv) return { error: "Pick a time for the daily reminder." }; return { mode: "daily", time: tv, tz: localTz() }; }
+      if (m === "repeat") {
+        const every = $(`#${key}-every`, wrap).value, tv = $(`#${key}-rtime`, wrap).value;
+        if (!tv) return { error: "Pick a time for the repeating reminder." };
+        const out = { mode: "repeat", every, time: tv, tz: localTz() };
+        if (every === "week") out.weekday = Number($(`#${key}-weekday`, wrap).value);
+        if (every === "month") out.monthday = Number($(`#${key}-monthday`, wrap).value);
+        return out;
+      }
       return { mode: "none" };
     };
     return wrap;
   }
-  function dueFor(r) { return r.mode === "once" ? r.at : r.mode === "daily" ? nextDaily(r.time) : null; }
+  function dueFor(r) { return r.mode === "once" ? r.at : r.mode === "daily" ? nextDaily(r.time) : r.mode === "repeat" ? nextRepeat(r) : null; }
 
   /* ---------- add form ---------- */
   let addCtl = reminderControls("new", null);
@@ -500,7 +549,9 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     $("#newText").value = "";
     const fresh = reminderControls("new", null); addCtl.replaceWith(fresh); addCtl = fresh;
     render();
-    say(r.mode === "none" ? `Got it: <b>${esc(text)}</b>` : r.mode === "once" ? `I'll remind you ${esc(fmtWhen(r.at))}.` : `I'll remind you every day at ${esc(fmtHHMM(r.time))}.`);
+    say(r.mode === "none" ? `Got it: <b>${esc(text)}</b>` : r.mode === "once" ? `I'll remind you ${esc(fmtWhen(r.at))}.`
+      : r.mode === "daily" ? `I'll remind you every day at ${esc(fmtHHMM(r.time))} until it's done.`
+      : `I'll remind you ${esc(repeatLabel(r).replace(" · ", " at ").replace(/^Every day at/, "every day at").replace(/^Every /, "every ").replace(/^Monthly/, "monthly"))}.`);
     if (matchMedia("(pointer: coarse)").matches) $("#newText").blur(); else $("#newText").focus();
   });
 
@@ -511,14 +562,20 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
 
   function chipsFor(t) {
     const c = [];
-    if (t.done) { c.push(`<span class="chip quiet">${ICON.check}Done ${esc(fmtWhen(t.doneAt || Date.now()))}</span>`); return c.join(""); }
+    if (t.done) {
+      c.push(`<span class="chip quiet">${ICON.check}Done ${esc(fmtWhen(t.doneAt || Date.now()))}</span>`);
+      if (isRepeat(t) && t.due) c.push(`<span class="chip quiet">${ICON.repeat}Back ${esc(fmtWhen(t.due))}</span>`);
+      return c.join("");
+    }
     const r = t.remind || { mode: "none" };
     if (t.snoozed && t.due) c.push(`<span class="chip snooze">${ICON.snooze}Snoozed until ${esc(fmtTime(t.due))}</span>`);
     if (r.mode === "once") {
       if (t.due && !t.snoozed) c.push(`<span class="chip">${ICON.bell}${esc(fmtWhen(t.due))}</span>`);
       else if (!t.due) c.push(`<span class="chip quiet">${ICON.bell}Reminded ${esc(fmtWhen(r.at))}</span>`);
     } else if (r.mode === "daily") {
-      c.push(`<span class="chip">${ICON.repeat}Every day · ${esc(fmtHHMM(r.time))}</span>`);
+      c.push(`<span class="chip">${ICON.snooze}Daily until done · ${esc(fmtHHMM(r.time))}</span>`);
+    } else if (r.mode === "repeat") {
+      c.push(`<span class="chip">${ICON.repeat}${esc(repeatLabel(r))}</span>`);
     }
     return c.join("");
   }
@@ -556,7 +613,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
         const r = ctl.read();
         const same = JSON.stringify({ ...r, tz: undefined }) === JSON.stringify({ ...t.remind, tz: undefined });
         if (r.error && !same) { err.textContent = r.error; err.hidden = false; return; }
-        if (!r.error && !same) { n.remind = r; n.due = dueFor(r); n.snoozed = false; }
+        if (!r.error && !same) { n.remind = r; n.due = dueFor(r); n.snoozed = false; n.openedByFire = false; }
       }
       persist(n); editing = null; render(); say("Saved.");
     });
@@ -597,7 +654,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
       ctl.innerHTML = `${done.length} · <button class="link" type="button" id="toggleDone">${showDone ? "Hide" : "Show"}</button> · <button class="link" type="button" id="clearDone">Clear</button>`;
       hd.lastChild.replaceWith(ctl); L.appendChild(hd);
       $("#toggleDone", hd).onclick = () => { showDone = !showDone; render(); };
-      $("#clearDone", hd).onclick = () => { done.forEach(t => remove(t.id)); render(); say("Cleared the done pile."); };
+      $("#clearDone", hd).onclick = () => { done.filter(t => !isRepeat(t)).forEach(t => remove(t.id)); render(); say(done.some(isRepeat) ? "Cleared. Repeating ones stay so they can come back." : "Cleared the done pile."); };
       if (showDone) { const ul = document.createElement("ul"); ul.className = "tasks"; done.forEach(t => ul.appendChild(taskEl(t))); L.appendChild(ul); }
     }
     const note = document.createElement("div"); note.className = "store-note";
@@ -773,11 +830,18 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     const t = tasks[id]; if (!t) return;
     const n = { ...t, done: !t.done, doneAt: t.done ? null : Date.now() };
     if (n.done) {
-      n.due = null; n.snoozed = false; dismissToast(id); cheer();
+      // A repeating to-do keeps its schedule. Checking it off before its reminder has gone off counts
+      // for that coming time, so the next reminder is the one after it.
+      if (isRepeat(t)) {
+        const now = Date.now();
+        n.due = t.openedByFire ? (t.due > now ? t.due : nextRepeat(t.remind, now)) : nextRepeat(t.remind, Math.max(now, t.due || now));
+        n.openedByFire = false;
+      } else n.due = null;
+      n.snoozed = false; dismissToast(id); cheer();
       const othersOpen = Object.values(tasks).some(x => x.id !== id && !x.done);
       say(othersOpen ? esc(nextWisdom()) : esc(allDoneLines[Math.floor(Math.random() * allDoneLines.length)]), 6500);
     }
-    else { n.due = n.remind && n.remind.mode !== "none" ? (n.remind.mode === "once" ? (n.remind.at > Date.now() ? n.remind.at : null) : nextDaily(n.remind.time)) : null; }
+    else { n.openedByFire = false; n.due = n.remind && n.remind.mode !== "none" ? (n.remind.mode === "once" ? (n.remind.at > Date.now() ? n.remind.at : null) : dueFor(n.remind)) : null; }
     persist(n);
     const li = document.querySelector(`li.task[data-id="${CSS.escape(id)}"]`);
     if (n.done) { tick(); try { navigator.vibrate && navigator.vibrate(12); } catch {} }
@@ -914,13 +978,15 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
     showToast(t); chime(); cheer(); say(`Reminder: <b>${esc(t.text)}</b>`, 6000); updateTitle();
   }
   function fire(t) {
-    const n = { ...t, snoozed: false, lastFired: Date.now(), due: t.remind.mode === "daily" ? nextDaily(t.remind.time) : null };
+    const now = Date.now();
+    const n = { ...t, snoozed: false, lastFired: now, due: t.remind.mode === "daily" ? nextDaily(t.remind.time) : isRepeat(t) ? nextRepeat(t.remind, now) : null };
+    if (isRepeat(t)) { n.done = false; n.doneAt = null; n.openedByFire = true; }   // it comes back
     persist(n); alertFor(n);
   }
   function showToast(t) {
     dismissToast(t.id);
     const el = document.createElement("div"); el.className = "toast"; el.setAttribute("role", "alertdialog"); el.setAttribute("aria-label", "Reminder: " + t.text);
-    el.innerHTML = `<div><img src="assets/frosty.webp" alt=""></div><div style="min-width:0"><div class="who">Reminder${t.remind.mode === "daily" ? " · every day" : ""}</div><div class="what">${esc(t.text)}</div>
+    el.innerHTML = `<div><img src="assets/frosty.webp" alt=""></div><div style="min-width:0"><div class="who">Reminder${t.remind.mode === "daily" ? " · until done" : isRepeat(t) ? " · repeats" : ""}</div><div class="what">${esc(t.text)}</div>
       <div class="acts"><button class="btn small" type="button" data-a="done">Check off</button><button class="btn small ghost" type="button" data-a="snooze">Snooze 10 min</button><button class="btn small ghost" type="button" data-a="close">Dismiss</button></div></div>`;
     el.addEventListener("click", e => {
       const a = e.target.closest("button")?.dataset.a; if (!a) return;
@@ -942,7 +1008,7 @@ ul.tasks { list-style: none; margin: 0; padding: 0; }
   function checkDue() {
     if (pushOn) return;
     const now = Date.now(); let changed = false;
-    for (const t of Object.values(tasks)) if (!t.done && t.due && t.due <= now && t.remind && t.remind.mode !== "none") {
+    for (const t of Object.values(tasks)) if ((!t.done || isRepeat(t)) && t.due && t.due <= now && t.remind && t.remind.mode !== "none") {
       if (server) { const k = t.id + ":" + t.due; if (!firedHere.has(k)) { firedHere.add(k); alertFor(t); } }
       else { fire(t); changed = true; }
     }

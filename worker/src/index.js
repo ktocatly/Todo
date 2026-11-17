@@ -22,15 +22,28 @@ function authorized(req, env) {
   return diff === 0;
 }
 
+const isRepeat = t => !!(t && t.remind && t.remind.mode === "repeat");
+
 function cleanTask(id, t) {
   if (!t || typeof t !== "object" || t.id !== id) return null;
   if (typeof t.text !== "string" || !t.text.trim() || t.text.length > 500) return null;
-  const due = t.done ? null : (Number.isFinite(t.due) ? Math.round(t.due) : null);
+  // A checked-off to-do has no reminder, except a repeating one, which keeps its next time.
+  const due = t.done && !isRepeat(t) ? null : (Number.isFinite(t.due) ? Math.round(t.due) : null);
   return { ...t, due, done: !!t.done };
 }
 
 /** Next time the clock in `tz` reads hh:mm, strictly after `after` (ms). Handles daylight-saving changes. */
 export function nextDaily(hhmm, tz, after) {
+  return nextRepeat({ every: "day", time: hhmm }, tz, after);
+}
+
+/**
+ * Next time a repeating reminder is due in time zone `tz`, strictly after `after`:
+ * every day, every week on `weekday` (0 = Sunday), or every month on `monthday`
+ * (the 29th-31st fall on the last day of shorter months).
+ */
+export function nextRepeat(r, tz, after) {
+  const hhmm = r.time;
   const [h, m] = String(hhmm).split(":").map(Number);
   let fmt;
   try { fmt = new Intl.DateTimeFormat("en-US", { timeZone: tz || "UTC", hourCycle: "h23", year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" }); }
@@ -38,11 +51,20 @@ export function nextDaily(hhmm, tz, after) {
   const parts = ms => Object.fromEntries(fmt.formatToParts(new Date(ms)).filter(p => p.type !== "literal").map(p => [p.type, Number(p.value)]));
   const offset = ms => { const p = parts(ms); return Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute, p.second) - Math.floor(ms / 1000) * 1000; };
   const today = parts(after);
-  for (let k = 0; k <= 2; k++) {
-    const wall = Date.UTC(today.year, today.month - 1, today.day + k, h, m);
-    let utc = wall - offset(wall);
-    utc = wall - offset(utc);
-    if (utc > after) return utc;
+  const toUtc = wall => { let utc = wall - offset(wall); return wall - offset(utc); };
+  if (r.every === "month") {
+    for (let k = 0; k <= 13; k++) {
+      const last = new Date(Date.UTC(today.year, today.month - 1 + k + 1, 0)).getUTCDate();
+      const utc = toUtc(Date.UTC(today.year, today.month - 1 + k, Math.min(Number(r.monthday) || 1, last), h, m));
+      if (utc > after) return utc;
+    }
+  } else {
+    for (let k = 0; k <= 8; k++) {
+      const wall = Date.UTC(today.year, today.month - 1, today.day + k, h, m);
+      if (r.every === "week" && new Date(wall).getUTCDay() !== Number(r.weekday)) continue;
+      const utc = toUtc(wall);
+      if (utc > after) return utc;
+    }
   }
   return after + 864e5;
 }
@@ -73,15 +95,23 @@ async function notifyAll(env, data, topic) {
 
 /** Send every reminder that is due, then move each one to its next time. */
 export async function runDue(env, now = Date.now()) {
-  const { results } = await env.DB.prepare("SELECT id, data, due FROM tasks WHERE done = 0 AND due IS NOT NULL AND due <= ?").bind(now).all();
+  const { results } = await env.DB.prepare(
+    "SELECT id, data, due FROM tasks WHERE due IS NOT NULL AND due <= ? AND (done = 0 OR json_extract(data, '$.remind.mode') = 'repeat')"
+  ).bind(now).all();
   for (const row of results) {
     const t = JSON.parse(row.data);
     const daily = t.remind && t.remind.mode === "daily";
-    await notifyAll(env, { title: "Karen's List", body: t.text, id: t.id, daily }, t.id);
-    const next = { ...t, snoozed: false, lastFired: now, due: daily ? nextDaily(t.remind.time, t.remind.tz, now) : null };
+    const repeat = isRepeat(t);
+    await notifyAll(env, { title: "Karen's List", body: t.text, id: t.id, daily: daily || repeat }, t.id);
+    const next = {
+      ...t, snoozed: false, lastFired: now,
+      due: daily ? nextDaily(t.remind.time, t.remind.tz, now) : repeat ? nextRepeat(t.remind, t.remind.tz, now) : null,
+    };
+    // A repeating to-do comes back onto the list each time its reminder goes off.
+    if (repeat) Object.assign(next, { done: false, doneAt: null, openedByFire: true });
     // Only move it on if the page hasn't changed this to-do in the meantime.
-    await env.DB.prepare("UPDATE tasks SET data = ?, due = ?, updated_at = ? WHERE id = ? AND due = ?")
-      .bind(JSON.stringify(next), next.due, now, t.id, row.due).run();
+    await env.DB.prepare("UPDATE tasks SET data = ?, due = ?, done = ?, updated_at = ? WHERE id = ? AND due = ?")
+      .bind(JSON.stringify(next), next.due, next.done ? 1 : 0, now, t.id, row.due).run();
   }
   return results.length;
 }

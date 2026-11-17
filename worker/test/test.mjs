@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import nodeCrypto from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
-import worker, { nextDaily, runDue } from "../src/index.js";
+import worker, { nextDaily, nextRepeat, runDue } from "../src/index.js";
 import { encryptPayload, unb64u, b64u } from "../src/webpush.js";
 
 let passed = 0;
@@ -72,6 +72,26 @@ await test("daily times follow the local clock across daylight saving", () => {
   assert.equal(new Date(nextDaily("23:30", "Asia/Kolkata", Date.parse("2026-11-16T18:30:00Z"))).toISOString(), "2026-11-17T18:00:00.000Z");
 });
 
+await test("weekly and monthly times land on the right local day", () => {
+  const ny = "America/New_York", iso = ms => new Date(ms).toISOString();
+  // Tue 17 Nov 2026, 10:00 New York. Every Friday 9:00 -> Fri 20 Nov 14:00Z
+  const tue = Date.parse("2026-11-17T15:00:00Z");
+  assert.equal(iso(nextRepeat({ every: "week", weekday: 5, time: "09:00" }, ny, tue)), "2026-11-20T14:00:00.000Z");
+  // Every Tuesday 9:00, already past today -> next Tuesday
+  assert.equal(iso(nextRepeat({ every: "week", weekday: 2, time: "09:00" }, ny, tue)), "2026-11-24T14:00:00.000Z");
+  // Every Tuesday 11:00, still ahead today -> today
+  assert.equal(iso(nextRepeat({ every: "week", weekday: 2, time: "11:00" }, ny, tue)), "2026-11-17T16:00:00.000Z");
+  // Monthly on the 1st 8:00 -> 1 Dec
+  assert.equal(iso(nextRepeat({ every: "month", monthday: 1, time: "08:00" }, ny, tue)), "2026-12-01T13:00:00.000Z");
+  // Monthly on the 31st -> 30 Nov (last day), then 31 Dec
+  assert.equal(iso(nextRepeat({ every: "month", monthday: 31, time: "09:00" }, ny, tue)), "2026-11-30T14:00:00.000Z");
+  assert.equal(iso(nextRepeat({ every: "month", monthday: 31, time: "09:00" }, ny, Date.parse("2026-11-30T14:00:00Z"))), "2026-12-31T14:00:00.000Z");
+  // February in a non-leap year -> 28th
+  assert.equal(iso(nextRepeat({ every: "month", monthday: 30, time: "09:00" }, ny, Date.parse("2027-02-01T00:00:00Z"))), "2027-02-28T14:00:00.000Z");
+  // Weekly across the March DST change keeps 9:00 local
+  assert.equal(iso(nextRepeat({ every: "week", weekday: 1, time: "09:00" }, ny, Date.parse("2027-03-09T15:00:00Z"))), "2027-03-15T13:00:00.000Z");
+});
+
 await test("wrong key is refused", async () => {
   assert.equal((await call("GET", "/api/tasks", null, "nope")).status, 401);
   assert.equal((await call("GET", "/api/vapid", null, "nope")).status, 200);
@@ -120,6 +140,25 @@ await test("checking off stops a daily reminder", async () => {
   sent.length = 0;
   await runDue(env, now);
   assert.ok(!sent.map(s => phone.decrypt(s.init.body).id).includes("t1"), "no reminder for a checked-off to-do");
+});
+
+await test("a repeating to-do comes back after being checked off", async () => {
+  const now = Date.parse("2026-11-20T14:00:20Z"); // Friday 9:00 New York
+  const r = { mode: "repeat", every: "week", weekday: 5, time: "09:00", tz: "America/New_York" };
+  // checked off earlier in the week; the page kept its next time (this Friday 9:00)
+  await call("PUT", "/api/tasks/r1", { id: "r1", text: "Take out recycling", done: true, doneAt: now - 3 * 864e5, createdAt: 9, remind: r, due: now - 20000 });
+  const saved = (await (await call("GET", "/api/tasks")).json()).tasks.find(t => t.id === "r1");
+  assert.equal(saved.due, now - 20000, "a checked-off repeating to-do keeps its next time");
+  sent.length = 0;
+  await runDue(env, now);
+  assert.ok(sent.map(s => phone.decrypt(s.init.body)).some(b => b.id === "r1" && b.body === "Take out recycling"), "reminder sent");
+  const back = (await (await call("GET", "/api/tasks")).json()).tasks.find(t => t.id === "r1");
+  assert.equal(back.done, false, "it is back on the list");
+  assert.equal(new Date(back.due).toISOString(), "2026-11-27T14:00:00.000Z", "next Friday 9:00");
+  // ignoring it doesn't stop next week's reminder
+  sent.length = 0;
+  await runDue(env, Date.parse("2026-11-27T14:00:10Z"));
+  assert.ok(sent.map(s => phone.decrypt(s.init.body)).some(b => b.id === "r1"));
 });
 
 await test("expired devices are forgotten", async () => {
